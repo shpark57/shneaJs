@@ -1,3 +1,6 @@
+
+
+
 /**
  * 그리드 행병합
  * @param colIdx
@@ -65,3 +68,30 @@ $.fn.colspan = function(rowIdx) {
         });
     });
 }
+
+//동적 모달 함수
+function openDynamicModal(id, width, height, title) {
+    $('<div id='+id+'>').dialog({
+        title: title,
+        height: width,
+        width: height,
+        modal: true,
+        open: function () {
+            $(".ui-widget-overlay").css({
+                opacity: 0.5,
+                filter: "Alpha(Opacity=50)",
+                backgroundColor: "black"
+            });
+            var div = $('<div>모달입니다.</div>');
+            $(this).append(div)
+        },
+        close: function (e) {
+            $(this).empty();
+            $(this).dialog('destroy');
+        },
+    });
+}
+
+
+
+

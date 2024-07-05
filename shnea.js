@@ -73,16 +73,34 @@ var shnea = (() => ({
         return ssn.replace(/(\d{6})\d{7}/, '$1-*******');
     }
     /**
-     * 배열에서 특정 키의 값으로 인덱스 찾기
+     * 배열에서 특정 키의 value 값으로 인덱스 찾기
      * @param arr
      * @param key
      * @param value
      * @returns {*|*[]}
      */
-    ,findIndicesByKey : (arr, key, value) => {
+    ,findIndexByKeyValue : (arr, key, value) => {
         if (!key) { return [];}
         return arr.map((element, index) => element[key] === value ? index : -1).filter(index => index !== -1);
     }
+
+    /**
+     * 배열에서 특정 키로 인덱스 찾기
+     * @param arr
+     * @param key
+     * @returns {*|*[]}
+     */
+    ,findIndexByKey : (arr, key) => {
+        if (!key) { return [];}
+        return arr.map((item, index) => item.hasOwnProperty(key) ? index : -1)
+            .filter(index => index !== -1);
+    }
+
+    /**
+     * 초를 시간:분:초로 변환
+     * @param sec
+     * @returns {string}
+     */
     ,secToTime : (sec = 0) => {
         const padWithZeros = (num) => num.toString().padStart(2, '0');
 
@@ -94,17 +112,46 @@ var shnea = (() => ({
         const formattedTime = `${padWithZeros(hours)}:${padWithZeros(minutes)}:${padWithZeros(secs)}`;
         return days > 0 ? `${days} ${formattedTime}` : formattedTime;
     }
+
+    /**
+     * 하나의 이모지를 유니코드로 변환
+     * @param emoji
+     * @returns {string}
+     */
+    ,emojiToUnicode : (emoji) => {
+        return Array.from(emoji).map(char => {
+            let hex = char.codePointAt(0).toString(16).toUpperCase();
+            return '&#x' + hex + ';';
+        }).join('');
+    }
+    /**
+     * 이모지를 유니코드로 변환
+     * @param str
+     * @returns {*}
+     */
+    ,extractAndReplaceEmojis : (str) => {
+        const emojiRegex = /([\u203C-\u3299\uD83C-\uDBFF\uDC00-\uDFFF\uFE0F])/g;
+        return str.replace(emojiRegex, match => emojiToUnicode(match));
+    }
+    /**
+     * 유니코드를 이모지로 변환
+     * @param str
+     * @returns {*}
+     */
+    ,decodeUnicodeToEmoji : (str) => {
+        return str.replace(/&#x([A-F0-9]+);/g, (match, hex) => {
+            return String.fromCodePoint(parseInt(hex, 16));
+        });
+    }
+    /**
+     * HTML 태그 제거
+     * @param str
+     * @returns {*}
+     */
+    ,removeHtmlTags : (str) => {
+        return str.replace(/<[^>]*>?/g, '');
+    }
 }))();
-
-
-
-
-
-
-
-
-
-
 
 
 /**
@@ -140,9 +187,51 @@ String.prototype.secToTime = function() {
     const formattedTime = `${padWithZeros(hours)}:${padWithZeros(minutes)}:${padWithZeros(secs)}`;
     return days > 0 ? `${days} ${formattedTime}` : formattedTime;
 }
+
+/**
+ * 하나의 이모지를 유니코드로 변환
+ * @returns {string}
+ */
+String.prototype.emojiToUnicode = function() {
+    return Array.from(this).map(char => {
+        let hex = char.codePointAt(0).toString(16).toUpperCase();
+        return '&#x' + hex + ';';
+    }).join('');
+}
+
+/**
+ * 이모지를 유니코드로 변환
+ * @returns {string}
+ */
+String.prototype.extractAndReplaceEmojis = function() {
+    const emojiRegex = /([\u203C-\u3299\uD83C-\uDBFF\uDC00-\uDFFF\uFE0F])/g;
+    return this.replace(emojiRegex, match => emojiToUnicode(match));
+}
+
+/**
+ * 유니코드를 이모지로 변환
+ * @returns {string}
+ */
+String.prototype.decodeUnicodeToEmoji = function() {
+    return this.replace(/&#x([A-F0-9]+);/g, (match, hex) => {
+        return String.fromCodePoint(parseInt(hex, 16));
+    });
+}
+
+/**
+ * HTML 태그 제거
+ * @returns {string}
+ */
+String.prototype.removeHtmlTags = function() {
+    return this.replace(/<[^>]*>?/g, '');
+}
+
+
 /**
  * 초를 시간:분:초로 변환
  * @returns {string}
+ * (1).secToTime() 또는  var num = 1; num.secToTime() 와 같이 사용해야함
+ * 1.secToTime() 는 에러 발생
  */
 Number.prototype.secToTime = function() {
     const sec = this; // this를 숫자로 변환
@@ -169,3 +258,14 @@ Array.prototype.findIndicesByKey = function(key, value) {
     if (!key) { return [];}
     return this.map((element, index) => element[key] === value ? index : -1).filter(index => index !== -1);
 };
+
+/**
+ * 배열에서 특정 키로 인덱스 찾기
+ * @param key
+ * @returns {(number|number)[]|*[]}
+ */
+Array.prototype.findIndexByKey = function(key) {
+    if (!key) { return [];}
+    return this.map((item, index) => item.hasOwnProperty(key) ? index : -1).filter(index => index !== -1);
+};
+
