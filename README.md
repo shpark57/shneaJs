@@ -1,7 +1,7 @@
-# shneaJs
+# 공통함수 모음 2024-07-08 
 
-`<script src="https://cdn.jsdelivr.net/gh/shpark57/shneaJs@main/shnea.js"></script>` 로 js 호출 <br/>
-`<script src="https://cdn.jsdelivr.net/gh/shpark57/shneaJs@main/shneaJq.js"></script>` 로 jquery 포함된 함수 호출<br/>
+`<script src="https://cdn.jsdelivr.net/gh/shpark57/shnea@main/shnea.js"></script>` 로 js 호출 <br/>
+`<script src="https://cdn.jsdelivr.net/gh/shpark57/shnea@main/shneaJq.js"></script>` 로 jquery 포함된 함수 호출<br/>
 shnea.js는 공통 라이브러리로 사용할 수 있는 자바스크립트 라이브러리입니다. <br/>
 shneaJq.js는 jQuery 라이브러리를 사용하여 제작한 라이브러리입니다. <br/>
 계속 추가 예정입니다.<br/>
@@ -18,37 +18,37 @@ jquery 사용 시 아래 스크립트와 css 추가 필수 <br/>
 
 ## shneaJs
     1. 문자열 카멜케이스로 변환
-        shneaJs.toCamelCase("문자열") or "문자열".toCamelCase()
+        shnea.toCamelCase("문자열") or "문자열".toCamelCase()
     2. 문자열 스네이크케이스로 변환
-        shneaJs.toSnakeCase("문자열") or "문자열".toSnakeCase()
+        shnea.toSnakeCase("문자열") or "문자열".toSnakeCase()
     3. 문자열 카멜케이스인지 확인
-        shneaJs.isCamelCase("문자열") or "문자열".isCamelCase()
+        shnea.isCamelCase("문자열") or "문자열".isCamelCase()
     4. 문자열 스네이크케이스인지 확인
-        shneaJs.isSnakeCase("문자열") or "문자열".isSnakeCase()
+        shnea.isSnakeCase("문자열") or "문자열".isSnakeCase()
     5. 주민등록번호 유효성 검사
-        shneaJs.isValidSSN("주민등록번호") or "주민등록번호".isValidSSN()
+        shnea.isValidSSN("주민등록번호") or "주민등록번호".isValidSSN()
     6. 주민등록번호 마스킹
-        shneaJs.maskSSN("주민등록번호") or "주민등록번호".maskSSN()
+        shnea.maskSSN("주민등록번호") or "주민등록번호".maskSSN()
     7. 배열에서 특정 키의 value  값으로 인덱스 찾기
-        shneaJs.findIndexByKeyValue(array , "key", "value") or array.findIndexByKeyValue("key", "value")
+        shnea.findIndexByKeyValue(array , "key", "value") or array.findIndexByKeyValue("key", "value")
     8. 배열에서 특정 키로 인덱스 찾기
-        shneaJs.findIndexByKey(array , "key") or array.findIndexByKey("key")
+        shnea.findIndexByKey(array , "key") or array.findIndexByKey("key")
     9. 초를 시간:분:초로 변환
-        shneaJs.secToTime("초") or "초".secToTime()
+        shnea.secToTime("초") or "초".secToTime()
     10. 하나의 이모지를 유니코드로 변환
-        shneaJs.emojiToUnicode("이모지") or "이모지".emojiToUnicode()
+        shnea.emojiToUnicode("이모지") or "이모지".emojiToUnicode()
     11. 유니코드를 이모지로 변환
-        shneaJs.extractAndReplaceEmojis("유니코드") or "유니코드".extractAndReplaceEmojis()
+        shnea.extractAndReplaceEmojis("유니코드") or "유니코드".extractAndReplaceEmojis()
     12. 유니코드를 이모지로 변환
-        shneaJs.decodeUnicodeToEmoji("유니코드") or "유니코드".decodeUnicodeToEmoji()
+        shnea.decodeUnicodeToEmoji("유니코드") or "유니코드".decodeUnicodeToEmoji()
     13. HTML 태그 제거
-        shneaJs.removeHtmlTags("HTML 태그가 포함된 내용") or "HTML 태그가 포함된 내용".removeHtmlTags()
+        shnea.removeHtmlTags("HTML 태그가 포함된 내용") or "HTML 태그가 포함된 내용".removeHtmlTags()
     14. null 또는 빈 값 또는 초기값 체크
-        shneaJs.isEmpty("값") or "값".isEmpty()
+        shnea.isEmpty("값") or "값".isEmpty()
     15. 전화번호 포맷
-        shneaJs.formatPhoneNumber("전화번호") or "전화번호".formatPhoneNumber()
+        shnea.formatPhoneNumber("전화번호") or "전화번호".formatPhoneNumber()
     16. 이메일 유효성 검사
-        shneaJs.isValidEmail("이메일") or "이메일".isValidEmail()
+        shnea.isValidEmail("이메일") or "이메일".isValidEmail()
     
 
 
