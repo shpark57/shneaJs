@@ -1,7 +1,7 @@
 # 공통함수 모음 2024-07-08 
 
-`<script src="https://cdn.jsdelivr.net/gh/shpark57/shnea@main/shnea.js"></script>` 로 js 호출 <br/>
-`<script src="https://cdn.jsdelivr.net/gh/shpark57/shnea@main/shneaJq.js"></script>` 로 jquery 포함된 함수 호출<br/>
+`<script src="https://cdn.jsdelivr.net/gh/shpark57/shnea@7891260/shnea.js"></script>` 로 js 호출 <br/>
+`<script src="https://cdn.jsdelivr.net/gh/shpark57/shnea@7891260/shneaJq.js"></script>` 로 jquery 포함된 함수 호출<br/>
 shnea.js는 공통 라이브러리로 사용할 수 있는 자바스크립트 라이브러리입니다. <br/>
 shneaJq.js는 jQuery 라이브러리를 사용하여 제작한 라이브러리입니다. <br/>
 계속 추가 예정입니다.<br/>
