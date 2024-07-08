@@ -1,7 +1,7 @@
 # 공통함수 모음 2024-07-08 
 
-`<script src="https://cdn.jsdelivr.net/gh/shpark57/shneaJs@7891260/shnea.js"></script>` 로 js 호출 <br/>
-`<script src="https://cdn.jsdelivr.net/gh/shpark57/shneaJs@7891260/shneaJq.js"></script>` 로 jquery 포함된 함수 호출<br/>
+`<script src="https://cdn.jsdelivr.net/gh/shpark57/shneaJs@afc8156/shnea.js"></script>` 로 js 호출 <br/>
+`<script src="https://cdn.jsdelivr.net/gh/shpark57/shneaJs@afc8156/shneaJq.js"></script>` 로 jquery 포함된 함수 호출<br/>
 shnea.js는 공통 라이브러리로 사용할 수 있는 자바스크립트 라이브러리입니다. <br/>
 shneaJq.js는 jQuery 라이브러리를 사용하여 제작한 라이브러리입니다. <br/>
 계속 추가 예정입니다.<br/>
@@ -49,6 +49,11 @@ jquery 사용 시 아래 스크립트와 css 추가 필수 <br/>
         shnea.formatPhoneNumber("전화번호") or "전화번호".formatPhoneNumber()
     16. 이메일 유효성 검사
         shnea.isValidEmail("이메일") or "이메일".isValidEmail()
+    17. 이미지를 MAX 사이즈보다 작게 조절
+         file_resize = await shnea.getCompressImage(file , MAX_SIZE , file.name)
+    18. url 경로에서 이미지 추출
+        var file = await shnea.getFileFromUrl("https://images.unsplash.com/photo-1707149414369-5989e250c788", "가져온 파일명");
+
     
 
 
