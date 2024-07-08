@@ -70,7 +70,8 @@ var shnea = (() => ({
      * @returns {*}
      */
     ,maskSSN : (ssn) => {
-        return ssn.replace(/(\d{6})\d{7}/, '$1-*******');
+        ssn = ssn.replace('-', '');
+        return ssn.replace(/(\d{6})(\d{1})\d{6}/, '$1-$2******');
     }
     /**
      * 배열에서 특정 키의 value 값으로 인덱스 찾기
