@@ -131,7 +131,7 @@ var shnea = (() => ({
      */
     ,extractAndReplaceEmojis : (str) => {
         const emojiRegex = /([\u203C-\u3299\uD83C-\uDBFF\uDC00-\uDFFF\uFE0F])/g;
-        return str.replace(emojiRegex, match => emojiToUnicode(match));
+        return str.replace(emojiRegex, match => shnea.emojiToUnicode(match));
     }
     /**
      * 유니코드를 이모지로 변환
@@ -151,6 +151,63 @@ var shnea = (() => ({
     ,removeHtmlTags : (str) => {
         return str.replace(/<[^>]*>?/g, '');
     }
+
+    /**
+     * null 또는 빈 값 또는 초기값 체크
+     * @param value
+     * @returns {boolean}
+     */
+    , isEmpty : (value) => {
+        if (!value) {
+            return true; // falsey 값 (0, '', false, null, undefined, NaN) 체크
+        } else if (Array.isArray(value) && value.length === 0) {
+            return true; // 빈 배열 체크
+        } else if (typeof value === 'object' && value !== null && Object.keys(value).length === 0) {
+            return true; // 빈 객체 체크
+        } else if (value === 'null') {
+            return true; // 문자열 "null" 체크
+        }
+        return false; // 초기값이 아닌 경우
+    }
+
+    /**
+     * 전화번호 포맷
+     * @param phoneNumber
+     * @returns {*|string}
+     */
+    ,formatPhoneNumber : (phoneNumber) => {
+        if (!phoneNumber) {
+            return '';
+        }
+        // 숫자가 아닌 문자 제거
+        phoneNumber = phoneNumber.replace(/[^0-9]/g, '');
+        // 휴대전화 번호 포맷 (010-XXXX-XXXX)
+        if (phoneNumber.startsWith('010') && phoneNumber.length === 11) {
+            return phoneNumber.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
+        }
+        // 서울 지역번호(02) 포맷 (02-XXXX-XXXX)
+        if (phoneNumber.startsWith('02') && phoneNumber.length === 9) {
+            return phoneNumber.replace(/(\d{2})(\d{3,4})(\d{4})/, '$1-$2-$3');
+        }
+        // 기타 지역번호 포맷 (0XX-XXXX-XXXX)
+        if (phoneNumber.length === 10 && phoneNumber.startsWith('0')) {
+            return phoneNumber.replace(/(\d{3})(\d{3,4})(\d{4})/, '$1-$2-$3');
+        }
+        // 기타 포맷 (0XX-XXXX-XXXX)
+        if (phoneNumber.length === 11 && phoneNumber.startsWith('0')) {
+            return phoneNumber.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
+        }
+        return phoneNumber; // 포맷에 맞지 않는 경우 원본 반환
+    }
+    /**
+     * 이메일 유효성 검사
+     * @param email
+     * @returns {boolean}
+     */
+    ,isValidEmail : (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
 }))();
 
 
@@ -159,7 +216,7 @@ var shnea = (() => ({
  * @returns {string}
  */
 String.prototype.toCamelCase = function() {
-    return this.toLowerCase().replace(/[-_\s]+(.)?/g, (match, char) => char ? char.toUpperCase() : '');
+    return shnea.toCamelCase(this);
 };
 
 /**
@@ -168,7 +225,7 @@ String.prototype.toCamelCase = function() {
  * @returns {string}
  */
 String.prototype.toSnakeCase = function(separator = '_') {
-    return this.replace(/([a-z])([A-Z])/g, `$1${separator}$2`).toLowerCase()
+    return shnea.toSnakeCase(this, separator);
 };
 
 /**
@@ -176,16 +233,7 @@ String.prototype.toSnakeCase = function(separator = '_') {
  * @returns {string}
  */
 String.prototype.secToTime = function() {
-    const sec = Number(this); // this를 숫자로 변환
-    const padWithZeros = (num) => num.toString().padStart(2, '0');
-
-    const days = Math.floor(sec / 86400);
-    const hours = Math.floor((sec % 86400) / 3600);
-    const minutes = Math.floor((sec % 3600) / 60);
-    const secs = sec % 60;
-
-    const formattedTime = `${padWithZeros(hours)}:${padWithZeros(minutes)}:${padWithZeros(secs)}`;
-    return days > 0 ? `${days} ${formattedTime}` : formattedTime;
+    return shnea.secToTime(this);
 }
 
 /**
@@ -193,10 +241,7 @@ String.prototype.secToTime = function() {
  * @returns {string}
  */
 String.prototype.emojiToUnicode = function() {
-    return Array.from(this).map(char => {
-        let hex = char.codePointAt(0).toString(16).toUpperCase();
-        return '&#x' + hex + ';';
-    }).join('');
+    return shnea.emojiToUnicode(this);
 }
 
 /**
@@ -204,8 +249,7 @@ String.prototype.emojiToUnicode = function() {
  * @returns {string}
  */
 String.prototype.extractAndReplaceEmojis = function() {
-    const emojiRegex = /([\u203C-\u3299\uD83C-\uDBFF\uDC00-\uDFFF\uFE0F])/g;
-    return this.replace(emojiRegex, match => emojiToUnicode(match));
+    return shnea.extractAndReplaceEmojis(this);
 }
 
 /**
@@ -213,9 +257,7 @@ String.prototype.extractAndReplaceEmojis = function() {
  * @returns {string}
  */
 String.prototype.decodeUnicodeToEmoji = function() {
-    return this.replace(/&#x([A-F0-9]+);/g, (match, hex) => {
-        return String.fromCodePoint(parseInt(hex, 16));
-    });
+    return shnea.decodeUnicodeToEmoji(this);
 }
 
 /**
@@ -223,9 +265,16 @@ String.prototype.decodeUnicodeToEmoji = function() {
  * @returns {string}
  */
 String.prototype.removeHtmlTags = function() {
-    return this.replace(/<[^>]*>?/g, '');
+    return shnea.removeHtmlTags(this);
 }
 
+String.prototype.formatPhoneNumber = function() {
+    return shnea.formatPhoneNumber(this);
+}
+
+String.prototype.isValidEmail = function() {
+    return shnea.isValidEmail(this);
+}
 
 /**
  * 초를 시간:분:초로 변환
@@ -234,18 +283,8 @@ String.prototype.removeHtmlTags = function() {
  * 1.secToTime() 는 에러 발생
  */
 Number.prototype.secToTime = function() {
-    const sec = this; // this를 숫자로 변환
-    const padWithZeros = (num) => num.toString().padStart(2, '0');
-
-    const days = Math.floor(sec / 86400);
-    const hours = Math.floor((sec % 86400) / 3600);
-    const minutes = Math.floor((sec % 3600) / 60);
-    const secs = sec % 60;
-
-    const formattedTime = `${padWithZeros(hours)}:${padWithZeros(minutes)}:${padWithZeros(secs)}`;
-    return days > 0 ? `${days} ${formattedTime}` : formattedTime;
+    return shnea.secToTime(this);
 }
-
 
 
 /**
@@ -254,9 +293,8 @@ Number.prototype.secToTime = function() {
  * @param value
  * @returns {(number|number)[]|*[]}
  */
-Array.prototype.findIndicesByKey = function(key, value) {
-    if (!key) { return [];}
-    return this.map((element, index) => element[key] === value ? index : -1).filter(index => index !== -1);
+Array.prototype.findIndexByKeyValue = function(key, value) {
+    return shnea.findIndexByKeyValue(this, key, value);
 };
 
 /**
@@ -265,7 +303,34 @@ Array.prototype.findIndicesByKey = function(key, value) {
  * @returns {(number|number)[]|*[]}
  */
 Array.prototype.findIndexByKey = function(key) {
-    if (!key) { return [];}
-    return this.map((item, index) => item.hasOwnProperty(key) ? index : -1).filter(index => index !== -1);
+    return shnea.findIndexByKey(this, key);
 };
 
+/**
+ * null 또는 빈 값 또는 초기값 체크
+ * @returns {boolean}
+ */
+Object.prototype.isEmpty = function() {
+    return shnea.isEmpty(this);
+}
+/**
+ * null 또는 빈 값 또는 초기값 체크
+ * @returns {boolean}
+ */
+String.prototype.isEmpty() = function() {
+    return shnea.isEmpty(this);
+}
+/**
+ * null 또는 빈 값 또는 초기값 체크
+ * @returns {boolean}
+ */
+Number.prototype.isEmpty() = function() {
+    return shnea.isEmpty(this);
+}
+/**
+ *  null 또는 빈 값 또는 초기값 체크
+ * @returns {boolean}
+ */
+Array.prototype.isEmpty() = function() {
+    return shnea.isEmpty(this);
+}
