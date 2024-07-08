@@ -18,8 +18,6 @@ jquery-ui.js
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-
-
 <script src="https://cdn.jsdelivr.net/gh/shpark57/shneaJs@7891260/shnea.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/shpark57/shneaJs@7891260/shneaJq.js"></script>
 
@@ -49,8 +47,62 @@ jquery-ui.js
                 }
             });
         })
+
+        /**
+         * 파일을 선택하면 파일의 정보를 표시하고 파일의 용량이 1M이 넘으면 리사이징을 진행한다.
+         */
+        $('#file').on('change' , async function(){
+            $("#file1Txt").text("파일 명 : " + $("#file")[0].files[0].name +  "\n파일 용량 : " + $("#file")[0].files[0].size )
+            $("#file2Txt").text("리사이징 진행" )
+            var file = $("#file")[0].files[0]
+            var MAX_SIZE = 1 * 1024 * 1024  // 1M
+            var file_resize
+            if(file.size > MAX_SIZE){
+                file_resize = await shnea.getCompressImage(file , MAX_SIZE , file.name)
+            }else{
+                file_resize = file
+            }
+
+            $("#file2Txt").text("파일 명 : " + file_resize.name +  "\n파일 용량 : " + file_resize.size )
+        });
+
+        /**
+         * 이미지 파일을 가져와서 file 객체를 가져온다.
+         */
+        $('#btn2').on('click', async function() {
+            // URL에서 파일을 가져오는 함수 호출
+            var file = await shnea.getFileFromUrl("https://images.unsplash.com/photo-1707149414369-5989e250c788", "가져온 파일명");
+            // 'txt' 요소에 파일 정보 표시
+            $("#txt").text("파일 명: " + file.name + "\n파일 용량: " + file.size);
+        });
     });
 </script>
 </body>
     <button id="btn1">동적 모달 열기</button><br/>
+
+</br>
+</br>
+이미지 리사이징
+</br>
+<input type="file" id="file">
+</br>
+원본 이미지 그대로 :
+</br>
+<textarea id="file1Txt" style="width : 500px"></textarea>
+</br>
+이미지 용량 압축 :
+</br>
+<textarea id="file2Txt" style="width : 500px"></textarea>
 </html>
+
+
+<br/>
+<br/>
+가져올 이미지 : https://images.unsplash.com/photo-1707149414369-5989e250c788
+<br/>
+<img src="https://images.unsplash.com/photo-1707149414369-5989e250c788" width = 300 ,height = 300>
+<br/>
+<input type="button" id="btn2" value="이미지 file 객체 가져오기"/>
+<br/>
+
+<textarea id="txt" style="width : 500px; height: 100px"></textarea>

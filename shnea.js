@@ -208,6 +208,102 @@ var shnea = (() => ({
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     }
+    /**
+     * 이미지를 MAX 사이즈보다 작게 조절
+     * @param file
+     * @param maxSizeInBytes
+     * @param origin_nm
+     * @param callback
+     */
+    ,compressImage : function(file, maxSizeInBytes, origin_nm, callback) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+
+                let width = img.width;
+                let height = img.height;
+                let ratio = 1;
+
+                const step = 0.02; // 압축 단계 2프로씩 줄임.  0.1 (10%)씩 줄일 경우 100KB 근처까지도 떨어짐.
+                let compressedSize = file.size;
+                const blob = canvas.toDataURL(file.type);
+                // 압축 단계별로 크기를 확인하여 maxSizeInBytes에 가까워질 때까지 반복
+                while (compressedSize > maxSizeInBytes && ratio > 0) {
+                    canvas.width = width;
+                    canvas.height = height;
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    const blob = canvas.toDataURL(file.type);
+                    compressedSize = blob.length * (3 / 4); // Base64로 인코딩된 크기 계산
+
+                    ratio -= step; // 압축 단계를 줄임
+
+                    width *= ratio;
+                    height *= ratio;
+                }
+
+                // 최종 압축된 이미지를 Blob으로 변환하여 콜백 함수 호출
+                canvas.toBlob(function(blob) {
+                    var file = new File([blob], origin_nm, { type : blob.type});
+                    callback(file);
+                }, file.type);
+            };
+            img.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+    /**
+     * 조절된 이미지를 편하게 불러오기 위한 함수
+     * @param file
+     * @param maxSizeInBytes
+     * @param origin_nm
+     * @returns {Promise<unknown>}
+     */
+    ,getCompressImage : async function (file, maxSizeInBytes, origin_nm){
+        return new Promise((resolve, reject) => {
+            shnea.compressImage(file, maxSizeInBytes, origin_nm, function(file) {
+                resolve(file);
+            });
+        });
+    }
+
+    /**
+     * URL 이미지를 파일로 변환
+     * @param imageUrl
+     * @param origin_nm
+     * @param callback
+     */
+    ,urlImgToFile : function(imageUrl, origin_nm , callback){
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", imageUrl, true);
+        xhr.responseType = "blob";
+
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                var blob = xhr.response;
+                var file = new File([blob], origin_nm, { type : blob.type});
+                callback(file);
+            }
+        };
+        xhr.send();
+    }
+    /**
+     * 불러온 이미지를 편하게 불러오기위한 함수
+     * @param imageUrl
+     * @param origin_nm
+     * @returns {Promise<unknown>}
+     */
+    ,getFileFromUrl : async function (imageUrl,origin_nm ) {
+        return new Promise((resolve, reject) => {
+            shnea.urlImgToFile(imageUrl, origin_nm, function(file) {
+                resolve(file);
+            });
+        });
+    }
+
 }))();
 
 
