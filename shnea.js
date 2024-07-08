@@ -110,7 +110,7 @@ var shnea = (() => ({
         const secs = sec % 60;
 
         const formattedTime = `${padWithZeros(hours)}:${padWithZeros(minutes)}:${padWithZeros(secs)}`;
-        return days > 0 ? `${days} ${formattedTime}` : formattedTime;
+        return days > 0 ? `${days}d ${formattedTime}` : formattedTime;
     }
 
     /**
@@ -275,6 +275,13 @@ String.prototype.formatPhoneNumber = function() {
 String.prototype.isValidEmail = function() {
     return shnea.isValidEmail(this);
 }
+/**
+ * 주민등록번호 유효성 검사
+ * @returns {boolean}
+ */
+String.prototype.isValidSSN = function() {
+    return shnea.isValidSSN(this);
+}
 
 /**
  * 초를 시간:분:초로 변환
@@ -317,20 +324,20 @@ Object.prototype.isEmpty = function() {
  * null 또는 빈 값 또는 초기값 체크
  * @returns {boolean}
  */
-String.prototype.isEmpty() = function() {
+String.prototype.isEmpty = function() {
     return shnea.isEmpty(this);
 }
 /**
  * null 또는 빈 값 또는 초기값 체크
  * @returns {boolean}
  */
-Number.prototype.isEmpty() = function() {
+Number.prototype.isEmpty = function() {
     return shnea.isEmpty(this);
 }
 /**
  *  null 또는 빈 값 또는 초기값 체크
  * @returns {boolean}
  */
-Array.prototype.isEmpty() = function() {
+Array.prototype.isEmpty = function() {
     return shnea.isEmpty(this);
 }
