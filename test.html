@@ -14,18 +14,19 @@ jquery-ui.js
 필수
 -->
 
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-<script src="https://code.jquery.com/ui/1.13.3/jquery-ui.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-<script src="https://cdn.jsdelivr.net/gh/shpark57/shneaJs@main/shnea.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/shpark57/shneaJs@main/shneaJq.js"></script>
 
+
+<script src="https://cdn.jsdelivr.net/gh/shpark57/shnea@main/shnea.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/shpark57/shnea@main/shneaJq.js"></script>
 
 <script>
     $(document).ready (function(){
         $("#btn1").on("click",function(){
-            openDynamicModal({
+            shneaJq.openDynamicModal({
                 width: 500,
                 height: 400,
                 title: '모달 타이틀',

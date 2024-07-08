@@ -44,7 +44,7 @@ jquery 사용 시 아래 스크립트와 css 추가 필수 <br/>
     13. HTML 태그 제거
         shnea.removeHtmlTags("HTML 태그가 포함된 내용") or "HTML 태그가 포함된 내용".removeHtmlTags()
     14. null 또는 빈 값 또는 초기값 체크
-        shnea.isEmpty("값") or "값".isEmpty()
+        shnea.isEmpty("값") 
     15. 전화번호 포맷
         shnea.formatPhoneNumber("전화번호") or "전화번호".formatPhoneNumber()
     16. 이메일 유효성 검사

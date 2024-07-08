@@ -312,32 +312,3 @@ Array.prototype.findIndexByKeyValue = function(key, value) {
 Array.prototype.findIndexByKey = function(key) {
     return shnea.findIndexByKey(this, key);
 };
-
-/**
- * null 또는 빈 값 또는 초기값 체크
- * @returns {boolean}
- */
-Object.prototype.isEmpty = function() {
-    return shnea.isEmpty(this);
-}
-/**
- * null 또는 빈 값 또는 초기값 체크
- * @returns {boolean}
- */
-String.prototype.isEmpty = function() {
-    return shnea.isEmpty(this);
-}
-/**
- * null 또는 빈 값 또는 초기값 체크
- * @returns {boolean}
- */
-Number.prototype.isEmpty = function() {
-    return shnea.isEmpty(this);
-}
-/**
- *  null 또는 빈 값 또는 초기값 체크
- * @returns {boolean}
- */
-Array.prototype.isEmpty = function() {
-    return shnea.isEmpty(this);
-}
