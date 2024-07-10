@@ -304,6 +304,48 @@ var shnea = (() => ({
             });
         });
     }
+    /**
+     * 입력된 날짜 값을 파싱하여 지정된 형식으로 변환하는 함수.
+     *
+     * @param {string | number | Date} input - 파싱할 날짜 값 (문자열, 숫자 또는 Date 객체).
+     * @param {string} format - 출력할 날짜 형식 (기본값: 'yyyy-MM-dd HH:mm:ss').
+     * @returns {string} 지정된 형식으로 변환된 날짜 문자열 또는 잘못된 입력인 경우 오류 메시지.
+     */
+    ,parseDate: (input, format = 'yyyy-MM-dd HH:mm:ss') => {
+        let date;
+        if (input instanceof Date) {
+            date = input;
+        } else if (typeof input === 'string' || typeof input === 'number') {
+            const str = input.toString().replace(/[-: ]/g, '');
+            const length = str.length;
+
+            if (length !== 8 && length !== 14) {
+                return "잘못된 날짜입니다.";
+            }
+
+            const year = str.slice(0, 4);
+            const month = str.slice(4, 6) - 1;
+            const day = str.slice(6, 8);
+            const hour = length === 14 ? str.slice(8, 10) : 0;
+            const minute = length === 14 ? str.slice(10, 12) : 0;
+            const second = length === 14 ? str.slice(12, 14) : 0;
+
+            date = new Date(year, month, day, hour, minute, second);
+        } else {
+            return "잘못된 날짜입니다.";
+        }
+
+        const map = {
+            'yyyy': date.getFullYear(),
+            'MM': ('0' + (date.getMonth() + 1)).slice(-2),
+            'dd': ('0' + date.getDate()).slice(-2),
+            'HH': ('0' + date.getHours()).slice(-2),
+            'mm': ('0' + date.getMinutes()).slice(-2),
+            'ss': ('0' + date.getSeconds()).slice(-2)
+        };
+
+        return format.replace(/yyyy|MM|dd|HH|mm|ss/g, matched => map[matched]);
+    }
 
 }))();
 
@@ -325,13 +367,7 @@ String.prototype.toSnakeCase = function(separator = '_') {
     return shnea.toSnakeCase(this, separator);
 };
 
-/**
- * 초를 시간:분:초로 변환
- * @returns {string}
- */
-String.prototype.secToTime = function() {
-    return shnea.secToTime(this);
-}
+
 
 /**
  * 하나의 이모지를 유니코드로 변환
@@ -365,6 +401,7 @@ String.prototype.removeHtmlTags = function() {
     return shnea.removeHtmlTags(this);
 }
 
+
 String.prototype.formatPhoneNumber = function() {
     return shnea.formatPhoneNumber(this);
 }
@@ -386,6 +423,10 @@ String.prototype.isValidSSN = function() {
  * (1).secToTime() 또는  var num = 1; num.secToTime() 와 같이 사용해야함
  * 1.secToTime() 는 에러 발생
  */
+
+String.prototype.secToTime = function() {
+    return shnea.secToTime(this);
+}
 Number.prototype.secToTime = function() {
     return shnea.secToTime(this);
 }
@@ -409,3 +450,21 @@ Array.prototype.findIndexByKeyValue = function(key, value) {
 Array.prototype.findIndexByKey = function(key) {
     return shnea.findIndexByKey(this, key);
 };
+
+
+/**
+ * 입력된 날짜 값을 파싱하여 지정된 형식으로 변환하는 함수.
+ *
+ * @param {string | number | Date} input - 파싱할 날짜 값 (문자열, 숫자 또는 Date 객체).
+ * @param {string} format - 출력할 날짜 형식 (기본값: 'yyyy-MM-dd HH:mm:ss').
+ * @returns {string} 지정된 형식으로 변환된 날짜 문자열 또는 잘못된 입력인 경우 오류 메시지.
+ */
+String.prototype.parseDate = function(format = 'yyyy-MM-dd HH:mm:ss') {
+    return shnea.parseDate(String(this), format);
+}
+Number.prototype.parseDate = function(format = 'yyyy-MM-dd HH:mm:ss') {
+    return shnea.parseDate(Number(this), format);
+}
+Date.prototype.parseDate = function(format = 'yyyy-MM-dd HH:mm:ss') {
+    return shnea.parseDate(this, format);
+}

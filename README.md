@@ -1,7 +1,7 @@
 # 공통함수 모음 2024-07-08 
 
-`<script src="https://cdn.jsdelivr.net/gh/shpark57/shneaJs@ebf49fe/shnea.js"></script>` 로 js 호출 <br/>
-`<script src="https://cdn.jsdelivr.net/gh/shpark57/shneaJs@ebf49fe/shneaJq.js"></script>` 로 jquery 포함된 함수 호출<br/>
+`<script src="https://cdn.jsdelivr.net/gh/shpark57/shneaJs@main/shnea.js"></script>` 로 js 호출 <br/>
+`<script src="https://cdn.jsdelivr.net/gh/shpark57/shneaJs@main/shneaJq.js"></script>` 로 jquery 포함된 함수 호출<br/>
 shnea.js는 공통 라이브러리로 사용할 수 있는 자바스크립트 라이브러리입니다. <br/>
 shneaJq.js는 jQuery 라이브러리를 사용하여 제작한 라이브러리입니다. <br/>
 계속 추가 예정입니다.<br/>
@@ -53,7 +53,9 @@ jquery 사용 시 아래 스크립트와 css 추가 필수 <br/>
          file_resize = await shnea.getCompressImage(file , MAX_SIZE , file.name)    
     18. url 경로에서 이미지 추출
         var file = await shnea.getFileFromUrl("https://images.unsplash.com/photo-1707149414369-5989e250c788", "가져온 파일명");
-
+    19.입력된 날짜 값을 파싱하여 지정된 형식으로 변환하는 함수.
+        shnea.parseDate("날짜"(string, number ,date) , "yyyy-MM-dd HH:mm:ss"(형식 제외가능) )         20240710101010 -> 2024-07-10 10:10:10       
+        "날짜".parseDate("형식"(제외가능))   , 날짜.parseDate("형식"(제외가능)) , date.parseDate("형식"(제외가능))    
     
 
 
