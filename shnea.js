@@ -347,6 +347,126 @@ var shnea = (() => ({
         return format.replace(/yyyy|MM|dd|HH|mm|ss/g, matched => map[matched]);
     }
 
+    /**
+     * 배열을 트리 구조로 변환
+     * @param array
+     * @param idField
+     * @param parentField
+     * @param sortField
+     * @returns {*[]}
+     */
+    , arrayToTree : (array, idField = 'id', parentField = 'upper_id', sortField = 'sort')  => {
+        const nodes = {};
+        const roots = [];
+
+        // 모든 노드를 id를 키로 하는 객체에 저장
+        array.forEach(item => {
+            nodes[item[idField]] = {...item, children: []};
+        });
+
+        // 각 노드를 그 부모의 children 배열에 추가
+        array.forEach(item => {
+            if (item[parentField] === '') {
+                // parentField가 빈 문자열이면 루트 노드
+                roots.push(nodes[item[idField]]);
+            } else if (nodes[item[parentField]]) {
+                // 부모 노드를 찾아서 children에 추가
+                nodes[item[parentField]].children.push(nodes[item[idField]]);
+            }
+        });
+
+        // 각 노드의 children 배열을 sortField 기준으로 정렬
+        const sortChildren = (node) => {
+            node.children.sort((a, b) => a[sortField] - b[sortField]);
+            node.children.forEach(child => sortChildren(child));
+        };
+
+        roots.forEach(root => sortChildren(root));
+
+        return roots
+    }
+
+    /**
+     * 트리를 배열로 변환
+     * @param tree
+     * @param idField
+     * @param parentField
+     * @param sortField
+     * @returns {*[]}
+     */
+    , treeToArray : (tree, idField = 'id', parentField = 'upper_id', sortField = 'sort') => {
+        const result = [];
+
+        // 트리를 순회하면서 배열로 변환
+        const traverse = (node) => {
+            const { children, ...rest } = node;  // children을 제외한 나머지 필드 가져오기
+            result.push(rest);  // 나머지 필드를 배열에 추가
+            node.children.sort((a, b) => a[sortField] - b[sortField]).forEach(child => traverse(child));
+        };
+
+        tree.forEach(root => traverse(root));
+        return result
+    }
+
+    /**
+     * 배열을 통계 데이터로 변환
+     * @param array
+     * @param headerField
+     * @param categoryField
+     * @param valueField
+     * @param includeTotal
+     * @param includeAverage
+     * @returns {*[]}
+     */
+    , arrayToStats : (array, headerField = 'date', categoryField = 'category', valueField = 'value', includeTotal = false, includeAverage = false) => {
+        const stats = {};
+        const allCategories = Array.from(new Set(array.map(item => item[categoryField])));
+
+        array.forEach(item => {
+            const headerValue = item[headerField];
+            if (!stats[headerValue]) {
+                stats[headerValue] = {};
+                allCategories.forEach(category => {
+                    stats[headerValue][category] = 0;
+                });
+            }
+            stats[headerValue][item[categoryField]] += item[valueField];
+        });
+
+        // 모든 헤더 값에 대해 모든 카테고리가 존재하도록 보장
+        for (const headerValue in stats) {
+            allCategories.forEach(category => {
+                if (!stats[headerValue][category]) {
+                    stats[headerValue][category] = 0;
+                }
+            });
+        }
+
+        // 배열로 변환하여 반환
+        const result = Object.entries(stats).map(([header, categories]) => ({
+            [headerField]: header,
+            ...categories
+        }));
+
+        // 토탈 및 평균 값 계산
+        if (includeTotal  || includeAverage) {
+            const total = { [headerField]: '합계' };
+            const average = { [headerField]: '평균' };
+            allCategories.forEach(category => {
+                const totalValue = array
+                    .filter(item => item[categoryField] === category)
+                    .reduce((sum, item) => sum += item[valueField], 0);
+                const totalCount = array.filter(item => item[categoryField] === category).length;
+                if (includeTotal) total[category] = totalValue;
+                if (includeAverage) average[category] = totalCount > 0 ? totalValue / totalCount : 0;
+            });
+            if (includeTotal) result.push(total);
+            if (includeAverage) result.push(average);
+        }
+
+        return result;
+    }
+
 }))();
 
 
@@ -467,4 +587,38 @@ Number.prototype.parseDate = function(format = 'yyyy-MM-dd HH:mm:ss') {
 }
 Date.prototype.parseDate = function(format = 'yyyy-MM-dd HH:mm:ss') {
     return shnea.parseDate(this, format);
+}
+
+
+/**
+ * 배열을 통계 데이터로 변환
+ * @param headerField
+ * @param categoryField
+ * @param valueField
+ * @param includeTotal
+ * @param includeAverage
+ * @returns {*[]}
+ */
+Array.prototype.arrayToStats = function(headerField = 'date', categoryField = 'category', valueField = 'value', includeTotal = false, includeAverage = false) {
+    return shnea.arrayToStats(this, headerField, categoryField, valueField, includeTotal, includeAverage);
+}
+/**
+ * 트리구조를 배열로 변환
+ * @param idField
+ * @param parentField
+ * @param sortField
+ * @returns {*[]}
+ */
+Array.prototype.treeToArray = function(idField = 'id', parentField = 'upper_id', sortField = 'sort') {
+    return shnea.treeToArray(this, idField, parentField, sortField);
+}
+/**
+ * 배열을 트리구조로 변환
+ * @param idField
+ * @param parentField
+ * @param sortField
+ * @returns {*[]}
+ */
+Array.prototype.arrayToTree = function(idField = 'id', parentField = 'upper_id', sortField = 'sort') {
+    return shnea.arrayToTree(this, idField, parentField, sortField);
 }

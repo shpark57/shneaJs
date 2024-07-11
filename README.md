@@ -1,4 +1,4 @@
-# 공통함수 모음 2024-07-10
+# 공통함수 모음 2024-07-11
 
 `<script src="https://cdn.jsdelivr.net/gh/shpark57/shneaJs@main/shnea.js"></script>` 로 js 호출 <br/>
 `<script src="https://cdn.jsdelivr.net/gh/shpark57/shneaJs@main/shneaJq.js"></script>` 로 jquery 포함된 함수 호출<br/>
@@ -57,8 +57,48 @@ jquery 사용 시 아래 스크립트와 css 추가 필수 <br/>
         shnea.parseDate("날짜"(string, number ,date) , "yyyy-MM-dd HH:mm:ss"(형식 제외가능) )         20240710101010 -> 2024-07-10 10:10:10       
         "날짜".parseDate("형식"(제외가능))   , 날짜.parseDate("형식"(제외가능)) , date.parseDate("형식"(제외가능))    
     
+    20.배열을 트리 구조로 변환         arrayToTree
+    21.트리를 배열로 변환             treeToArray
+    22.배열을 통계 데이터로 변환       arrayToStats
 
+        const sampleArray = [
+            { id: 'a', upper_id: '', category: 'cat1', value: 10, sort: 1, extra: 'extra1', date: '2024-01-01' },
+            { id: 'b', upper_id: '', category: 'cat2', value: 20, sort: 2, extra: 'extra2', date: '2024-01-02' },
+            { id: 'c', upper_id: '', category: 'cat3', value: 30, sort: 3, extra: 'extra3', date: '2024-01-03' },
+            { id: 'aa', upper_id: 'a', category: 'cat1', value: 15, sort: 1, extra: 'extra4', date: '2024-01-04' },
+            { id: 'bb', upper_id: 'b', category: 'cat2', value: 25, sort: 2, extra: 'extra5', date: '2024-01-05' },
+            { id: 'cc', upper_id: 'c', category: 'cat3', value: 35, sort: 3, extra: 'extra6', date: '2024-01-06' },
+            { id: 'aa2', upper_id: 'a', category: 'cat1', value: 18, sort: 2, extra: 'extra7', date: '2024-01-07' },
+            { id: 'aa3', upper_id: 'a', category: 'cat1', value: 19, sort: 3, extra: 'extra8', date: '2024-01-08' },
+            { id: 'aa4', upper_id: 'a', category: 'cat1', value: 17, sort: 4, extra: 'extra9', date: '2024-01-09' },
+            { id: 'aaa', upper_id: 'aa', category: 'cat1', value: 16, sort: 1, extra: 'extra10', date: '2024-01-10' }
+        ];
+        배열을 트리 구조로 변환
+        id,upper_id,children,sort 생략 가능  다른 컬럼을 사용하려면 컬럼명을 명시해주어야함
+        shnea.arrayToTree(sampleArray); 
+        shnea.arrayToTree(sampleArray , 'id', 'upper_id'); 
+        shnea.arrayToTree(sampleArray , 'id', 'upper_id' , 'sort'); 
+        sampleArray.arrayToTree();       
+        sampleArray.arrayToTree('id', 'upper_id');
+        sampleArray.arrayToTree('id', 'upper_id' , 'sort');
+                
 
+        트리를 배열로 변환 
+        id,upper_id,children,sort 생략 가능  다른 컬럼을 사용하려면 컬럼명을 명시해주어야함
+        shnea.treeToArray(sampleArray); 
+        shnea.treeToArray(sampleArray , 'id', 'upper_id'); 
+        shnea.treeToArray(sampleArray , 'id', 'upper_id' , 'sort'); 
+        sampleArray.treeToArray();       
+        sampleArray.treeToArray('id', 'upper_id');
+        sampleArray.treeToArray('id', 'upper_id' , 'sort');
+    
+        배열을 통계 데이터로 변환
+        headerField,categoryField,valueField,includeTotal,includeAverage 생략 가능  다른 컬럼을 사용하려면 컬럼명을 명시해주어야함
+        includeTotal == true 이면 합계를 추가함 , includeAverage == true 이면 평균을 추가함
+        shnea.arrayToStats(sampleArray, headerField = 'date', categoryField = 'category', valueField = 'value', includeTotal = false, includeAverage = false);  
+        sampleArray.arrayToStats();
+        sampleArray.arrayToStats('date' , 'category' , 'value' );
+        sampleArray.arrayToStats('date' , 'category' , 'value' , true , true);
 
 
 ## shneaJq.js
