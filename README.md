@@ -37,8 +37,8 @@ jquery 사용 시 아래 스크립트와 css 추가 필수 <br/>
         shnea.secToTime("초") or "초".secToTime()              3661 -> 01:01:01
     10. 하나의 이모지를 유니코드로 변환
         shnea.emojiToUnicode("이모지") or "이모지".emojiToUnicode()       😁 -> \ud83d\ude01
-    11. 유니코드를 이모지로 변환
-        shnea.extractAndReplaceEmojis("유니코드") or "유니코드".extractAndReplaceEmojis()    \ud83d\ude01 -> 😁
+    11. 모든 이모지를 유니코드로 변환
+        shnea.extractAndReplaceEmojis("유니코드") or "유니코드".extractAndReplaceEmojis()     😁😁 -> \ud83d\ude01\ud83d\ude01
     12. 유니코드를 이모지로 변환
         shnea.decodeUnicodeToEmoji("유니코드") or "유니코드".decodeUnicodeToEmoji()     \ud83d\ude01 -> 😁
     13. HTML 태그 제거
