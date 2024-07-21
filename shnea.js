@@ -642,5 +642,3 @@ Array.prototype.treeToArray = function(idField = 'id', parentField = 'upper_id',
 Array.prototype.arrayToTree = function(idField = 'id', parentField = 'upper_id', sortField = 'sort') {
     return shnea.arrayToTree(this, idField, parentField, sortField);
 }
-
-Str
