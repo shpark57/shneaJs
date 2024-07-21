@@ -100,6 +100,8 @@ jquery 사용 시 아래 스크립트와 css 추가 필수 <br/>
         sampleArray.arrayToStats('date' , 'category' , 'value' );
         sampleArray.arrayToStats('date' , 'category' , 'value' , true , true);
 
+    23. 전화번호 유효성 검사
+        shnea.isValidPhoneNumber("전화번호") or "전화번호".isValidPhoneNumber()               전화번호 형식이면 true 반환
 
 ## shneaJq.js
     1. 그리드의 열 병합

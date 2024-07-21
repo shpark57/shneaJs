@@ -169,14 +169,30 @@ var shnea = (() => ({
             return true; // 문자열 "null" 체크
         }
         return false; // 초기값이 아닌 경우
-    }
+    },
+    /**
+     * 전화번호 유효성 검사
+     * @param phoneNumber
+     * @returns {boolean}
+     */
+    isValidPhoneNumber: (phoneNumber) => {
+        // 허용된 전화번호 형식 정규식 배열
+        const phoneRegexes = [
+            /^010-\d{4}-\d{4}$/,   // 휴대전화 번호 (010-XXXX-XXXX)
+            /^02-\d{3,4}-\d{4}$/,  // 서울 지역번호 (02-XXXX-XXXX)
+            /^0\d{2}-\d{3,4}-\d{4}$/  // 기타 지역번호 (0XX-XXXX-XXXX 또는 0XX-XXX-XXXX)
+        ];
+
+        // 하나의 정규식이라도 만족하면 true 반환
+        return phoneRegexes.some(regex => regex.test(phoneNumber));
+    },
 
     /**
      * 전화번호 포맷
      * @param phoneNumber
      * @returns {*|string}
      */
-    ,formatPhoneNumber : (phoneNumber) => {
+    formatPhoneNumber : (phoneNumber) => {
         if (!phoneNumber) {
             return '';
         }
@@ -200,6 +216,8 @@ var shnea = (() => ({
         }
         return phoneNumber; // 포맷에 맞지 않는 경우 원본 반환
     }
+
+
     /**
      * 이메일 유효성 검사
      * @param email
@@ -521,7 +539,9 @@ String.prototype.removeHtmlTags = function() {
     return shnea.removeHtmlTags(this);
 }
 
-
+String.prototype.isValidPhoneNumber = function() {
+    return shnea.isValidPhoneNumber(this);
+}
 String.prototype.formatPhoneNumber = function() {
     return shnea.formatPhoneNumber(this);
 }
@@ -622,3 +642,5 @@ Array.prototype.treeToArray = function(idField = 'id', parentField = 'upper_id',
 Array.prototype.arrayToTree = function(idField = 'id', parentField = 'upper_id', sortField = 'sort') {
     return shnea.arrayToTree(this, idField, parentField, sortField);
 }
+
+Str
