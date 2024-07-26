@@ -483,6 +483,93 @@ var shnea = (() => ({
         }
 
         return result;
+    },
+    /**
+     * 문자열 길이 검사
+     * @param password
+     * @param length
+     * @returns {boolean}
+     */
+    checkLength: (password , length) => {
+        return password.length >= length;
+    },
+
+    /**
+     * 대소문자 포함 검사
+     * @param password
+     * @returns {boolean}
+     */
+    checkUpperLowerCase: (password) => {
+        return /[a-z]/.test(password) && /[A-Z]/.test(password);
+    },
+
+    /**
+     * 특수문자 포함 검사
+     * @param password
+     * @returns {boolean}
+     */
+    checkSpecialChar: (password) => {
+        return /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    },
+
+    /**
+     * 반복 문자 및 문자열 검사
+     * @param password
+     * @returns {boolean}
+     */
+    checkRepeatedChars: (password) => {
+        const regex = /(.{1,3})\1{2,}/g;
+        return !regex.test(password);
+    },
+
+    /**
+     * 비밀번호 체크 함수
+     * level 1 : 8자 이상
+     * level 2 : 8자 이상, 대소문자 포함
+     * level 3 : 8자 이상, 대소문자 포함, 반복 문자 금지
+     * level 4 : 8자 이상, 대소문자 포함, 특수문자 포함 (default)
+     * level 5 : 8자 이상, 대소문자 포함, 특수문자 포함, 반복 문자 금지
+     * @param password
+     * @param level
+     * @returns {Object}
+     */
+    checkPassword: (password, level = 4) => {
+        const result = {
+            isValid: true,
+            reason: ""
+        };
+
+        if (!shnea.checkLength(password, 8)) {
+            result.isValid = false;
+            result.reason = "비밀번호 길이는 8자 이상이어야 합니다.";
+            return result;
+        }
+
+        if (level >= 2 && !shnea.checkUpperLowerCase(password)) {
+            result.isValid = false;
+            result.reason = "비밀번호는 대소문자를 모두 포함해야 합니다.";
+            return result;
+        }
+
+        if (level >= 3 && !shnea.checkRepeatedChars(password)) {
+            result.isValid = false;
+            result.reason = "비밀번호는 반복 문자를 포함할 수 없습니다.";
+            return result;
+        }
+
+        if (level >= 4 && !shnea.checkSpecialChar(password)) {
+            result.isValid = false;
+            result.reason = "비밀번호는 특수문자를 포함해야 합니다.";
+            return result;
+        }
+
+        if (level >= 5 && !shnea.checkRepeatedChars(password)) {
+            result.isValid = false;
+            result.reason = "비밀번호는 반복 문자를 포함할 수 없습니다.";
+            return result;
+        }
+
+        return result;
     }
 
 }))();
@@ -641,4 +728,53 @@ Array.prototype.treeToArray = function(idField = 'id', parentField = 'upper_id',
  */
 Array.prototype.arrayToTree = function(idField = 'id', parentField = 'upper_id', sortField = 'sort') {
     return shnea.arrayToTree(this, idField, parentField, sortField);
+}
+
+/**
+ * 비밀번호 체크 함수
+ * level 1 : 8자 이상
+ * level 2 : 8자 이상, 대소문자 포함
+ * level 3 : 8자 이상, 대소문자 포함, 반복 문자 금지
+ * level 4 : 8자 이상, 대소문자 포함, 특수문자 포함 (default)
+ * level 5 : 8자 이상, 대소문자 포함, 특수문자 포함, 반복 문자 금지
+ * @param password
+ * @param level
+ * @returns {Object}
+ */
+String.prototype.checkPassword = function(level = 4) {
+    return shnea.checkPassword(this, level);
+}
+/**
+ * 문자열 길이 검사
+ * @param password
+ * @param length
+ * @returns {boolean}
+ */
+String.prototype.checkLength = function(length) {
+    return shnea.checkLength(this, length);
+}
+/**
+ * 대소문자 포함 검사
+ * @param password
+ * @returns {boolean}
+ */
+String.prototype.checkUpperLowerCase = function() {
+    return shnea.checkUpperLowerCase(this);
+}
+
+/**
+ * 특수문자 포함 검사
+ * @param password
+ * @returns {boolean}
+ */
+String.prototype.checkSpecialChar = function() {
+    return shnea.checkSpecialChar(this);
+}
+/**
+ * 반복 문자 및 문자열 검사
+ * @param password
+ * @returns {boolean}
+ */
+String.prototype.checkRepeatedChars = function() {
+    return shnea.checkRepeatedChars(this);
 }

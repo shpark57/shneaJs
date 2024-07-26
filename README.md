@@ -101,7 +101,27 @@ jquery 사용 시 아래 스크립트와 css 추가 필수 <br/>
         sampleArray.arrayToStats('date' , 'category' , 'value' , true , true);
 
     23. 전화번호 유효성 검사
-        shnea.isValidPhoneNumber("전화번호") or "전화번호".isValidPhoneNumber()               전화번호 형식이면 true 반환
+        shnea.isValidPhoneNumber("전화번호") or "전화번호".isValidPhoneNumber()         전화번호 형식이면 true 반환
+    24. 문자열 길이 체크
+        shnea.checkLength("문자열", "길이") or "문자열".checkLength("길이")              문자열의 길이가 길이보다 작으면 true 반환
+    25. 대소문자 포함 검사
+        shnea.checkUpperLowerCase("문자열") or "문자열".checkUpperLowerCase()          대문자와 소문자가 모두 포함되어 있으면 true 반환
+    26. 특수문자 포함 검사
+        shnea.checkSpecialCharacter("문자열") or "문자열".checkSpecialCharacter()      특수문자가 포함되어 있으면 true 반환
+    27. 반복 문자 및 문자열 검사 
+        shnea.checkRepeatedChars("문자열") or "문자열".checkRepeatedChars()            문자열에 3번이상 반복되는 문자나 문자열이 있다면 true 반환
+    28. 패스워드 체크 함수
+        shnea.checkPassword("문자열",2) or "문자열".checkPassword(level)                   
+        level 1 : 8자 이상
+        level 2 : 8자 이상, 대소문자 포함
+        level 3 : 8자 이상, 대소문자 포함, 반복 문자 금지
+        level 4 : 8자 이상, 대소문자 포함, 특수문자 포함 (default)
+        level 5 : 8자 이상, 대소문자 포함, 특수문자 포함, 반복 문자 금지
+        결과값 예시 : 
+            성공 : {isValid: true, reason: ""}
+            실패 : {isValid: false, reason: "비밀번호는 대소문자를 모두 포함해야 합니다."}
+
+
 
 ## shneaJq.js
     1. 그리드의 열 병합
