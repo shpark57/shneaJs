@@ -1,4 +1,4 @@
-# 공통함수 모음 2024-07-11
+# 공통함수 모음 2024-07-26
 
 `<script src="https://cdn.jsdelivr.net/gh/shpark57/shneaJs@main/shnea.js"></script>` 로 js 호출 <br/>
 `<script src="https://cdn.jsdelivr.net/gh/shpark57/shneaJs@main/shneaJq.js"></script>` 로 jquery 포함된 함수 호출<br/>
