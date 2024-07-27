@@ -384,7 +384,7 @@ var shnea = (() => ({
 
         // 각 노드를 그 부모의 children 배열에 추가
         array.forEach(item => {
-            if (item[parentField] === '') {
+            if (shnea.isEmpty(item[parentField])) {
                 // parentField가 빈 문자열이면 루트 노드
                 roots.push(nodes[item[idField]]);
             } else if (nodes[item[parentField]]) {
