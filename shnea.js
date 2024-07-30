@@ -399,6 +399,8 @@ var shnea = (() => ({
             node.children.forEach(child => sortChildren(child));
         };
 
+        // 루트 노드들도 sortField 기준으로 정렬
+        roots.sort((a, b) => a[sortField] - b[sortField]);
         roots.forEach(root => sortChildren(root));
 
         return roots
