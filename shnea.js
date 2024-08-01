@@ -572,58 +572,159 @@ var shnea = (() => ({
         }
 
         return result;
-    }
+    },
+    /**
+     * 배열을 여러 키의 값으로 정렬하는 함수
+     * @param array
+     * @param keys
+     * @returns {*[]}
+     */
+    multiSortByKeys: (array, keys) => {
+        if (!Array.isArray(array) || (!Array.isArray(keys) && typeof keys !== 'object' && typeof keys !== 'string')) {
+            throw new Error('Invalid input');
+        }
 
+        // 단일 문자열 또는 객체를 배열로 변환
+        if (typeof keys === 'string') {
+            keys = [{ key: keys }];
+        } else if (!Array.isArray(keys)) {
+            keys = [keys];
+        } else {
+            // keys 배열 내의 단일 문자열을 객체로 변환
+            keys = keys.map(key => typeof key === 'string' ? { key: key } : key);
+        }
+
+        return array.sort((a, b) => {
+            for (let { key, order = 'asc' } of keys) {
+                if (a[key] < b[key]) {
+                    return order === 'desc' ? 1 : -1;
+                }
+                if (a[key] > b[key]) {
+                    return order === 'desc' ? -1 : 1;
+                }
+            }
+            return 0;
+        });
+    },
+    /**
+     * 날짜의 차이 구하기
+     * @param date1
+     * @param date2
+     * @returns {number}
+     */
+    dateDifference: (date1, date2) => {
+        const d1 = new Date(date1);
+        const d2 = new Date(date2);
+        const diffTime = Math.abs(d2 - d1);
+        return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    },
+
+    /**
+     * 특정 날짜가 속한 달의 마지막 날
+     * @param date
+     * @returns {Date}
+     */
+    getLastDayOfMonth: (date) => {
+        const d = new Date(date);
+        return new Date(d.getFullYear(), d.getMonth() + 1, 0);
+    },
+
+    /**
+     * 날짜가 몇째 주인지
+     * @param date
+     * @param type
+     * @returns {number}
+     */
+    getWeekOfMonth: (date, type = 1) => {
+        const d = new Date(date);
+        const firstDay = new Date(d.getFullYear(), d.getMonth(), 1).getDay();
+        const adjustedDate = d.getDate() + firstDay - 1;
+        if (type === 1) {
+            return Math.ceil(adjustedDate / 7);
+        } else if (type === 2) {
+            const startOfYear = new Date(d.getFullYear(), 0, 1);
+            const pastDaysOfYear = (d - startOfYear) / (1000 * 60 * 60 * 24);
+            return Math.ceil((pastDaysOfYear + startOfYear.getDay() + 1) / 7);
+        }
+    },
+
+    /**
+     * 특정 날짜가 무슨 요일인지
+     * @param date
+     * @returns {string}
+     */
+    getDayOfWeek: (date) => {
+        const days = ['일', '월', '화', '수', '목', '금', '토'];
+        const d = new Date(date);
+        return days[d.getDay()];
+    },
+
+    /**
+     *  특정 날짜로부터 X일 더해지면 몇 월 며칠인지
+     * @param date
+     * @param days
+     * @returns {Date}
+     */
+    addDays: (date, days) => {
+        const d = new Date(date);
+        d.setDate(d.getDate() + days);
+        return d;
+    },
+
+
+    /**
+     * 특정 날짜가 주말이면 금요일 또는 다음 주 월요일의 날짜
+     * @param date
+     * @param type
+     * @returns {Date}
+     */
+    getAdjustedWeekendDate: (date, type = 1) => {
+        const d = new Date(date);
+        const day = d.getDay();
+        if (day === 0) { // Sunday
+            d.setDate(d.getDate() + (type === 1 ? -2 : 1)); // Friday or next Monday
+        } else if (day === 6) { // Saturday
+            d.setDate(d.getDate() + (type === 1 ? -1 : 2)); // Friday or next Monday
+        }
+        return d;
+    },
+
+    /**
+     * 날짜와 날짜 사이의 날짜 모두 반환
+     * @param startDate
+     * @param endDate
+     * @returns {*[]}
+     */
+    getDatesBetween: (startDate, endDate) => {
+        const dates = [];
+        const currentDate = new Date(startDate);
+        const end = new Date(endDate);
+
+        while (currentDate <= end) {
+            dates.push(new Date(currentDate));
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+
+        return dates;
+    }
 }))();
 
 
-/**
- * 문자열을 카멜케이스로 변환
- * @returns {string}
- */
 String.prototype.toCamelCase = function() {
     return shnea.toCamelCase(this);
 };
-
-/**
- * 문자열을 스네이크케이스로 변환
- * @param separator
- * @returns {string}
- */
 String.prototype.toSnakeCase = function(separator = '_') {
     return shnea.toSnakeCase(this, separator);
 };
-
-
-
-/**
- * 하나의 이모지를 유니코드로 변환
- * @returns {string}
- */
 String.prototype.emojiToUnicode = function() {
     return shnea.emojiToUnicode(this);
 }
-
-/**
- * 이모지를 유니코드로 변환
- * @returns {string}
- */
 String.prototype.extractAndReplaceEmojis = function() {
     return shnea.extractAndReplaceEmojis(this);
 }
-
-/**
- * 유니코드를 이모지로 변환
- * @returns {string}
- */
 String.prototype.decodeUnicodeToEmoji = function() {
     return shnea.decodeUnicodeToEmoji(this);
 }
-
-/**
- * HTML 태그 제거
- * @returns {string}
- */
 String.prototype.removeHtmlTags = function() {
     return shnea.removeHtmlTags(this);
 }
@@ -638,20 +739,9 @@ String.prototype.formatPhoneNumber = function() {
 String.prototype.isValidEmail = function() {
     return shnea.isValidEmail(this);
 }
-/**
- * 주민등록번호 유효성 검사
- * @returns {boolean}
- */
 String.prototype.isValidSSN = function() {
     return shnea.isValidSSN(this);
 }
-
-/**
- * 초를 시간:분:초로 변환
- * @returns {string}
- * (1).secToTime() 또는  var num = 1; num.secToTime() 와 같이 사용해야함
- * 1.secToTime() 는 에러 발생
- */
 
 String.prototype.secToTime = function() {
     return shnea.secToTime(this);
@@ -659,35 +749,12 @@ String.prototype.secToTime = function() {
 Number.prototype.secToTime = function() {
     return shnea.secToTime(this);
 }
-
-
-/**
- * 배열에서 특정 키의 값으로 인덱스 찾기
- * @param key
- * @param value
- * @returns {(number|number)[]|*[]}
- */
 Array.prototype.findIndexByKeyValue = function(key, value) {
     return shnea.findIndexByKeyValue(this, key, value);
 };
-
-/**
- * 배열에서 특정 키로 인덱스 찾기
- * @param key
- * @returns {(number|number)[]|*[]}
- */
 Array.prototype.findIndexByKey = function(key) {
     return shnea.findIndexByKey(this, key);
 };
-
-
-/**
- * 입력된 날짜 값을 파싱하여 지정된 형식으로 변환하는 함수.
- *
- * @param {string | number | Date} input - 파싱할 날짜 값 (문자열, 숫자 또는 Date 객체).
- * @param {string} format - 출력할 날짜 형식 (기본값: 'yyyy-MM-dd HH:mm:ss').
- * @returns {string} 지정된 형식으로 변환된 날짜 문자열 또는 잘못된 입력인 경우 오류 메시지.
- */
 String.prototype.parseDate = function(format = 'yyyy-MM-dd HH:mm:ss') {
     return shnea.parseDate(String(this), format);
 }
@@ -697,86 +764,52 @@ Number.prototype.parseDate = function(format = 'yyyy-MM-dd HH:mm:ss') {
 Date.prototype.parseDate = function(format = 'yyyy-MM-dd HH:mm:ss') {
     return shnea.parseDate(this, format);
 }
-
-
-/**
- * 배열을 통계 데이터로 변환
- * @param headerField
- * @param categoryField
- * @param valueField
- * @param includeTotal
- * @param includeAverage
- * @returns {*[]}
- */
 Array.prototype.arrayToStats = function(headerField = 'date', categoryField = 'category', valueField = 'value', includeTotal = false, includeAverage = false) {
     return shnea.arrayToStats(this, headerField, categoryField, valueField, includeTotal, includeAverage);
 }
-/**
- * 트리구조를 배열로 변환
- * @param idField
- * @param parentField
- * @param sortField
- * @returns {*[]}
- */
 Array.prototype.treeToArray = function(idField = 'id', parentField = 'upper_id', sortField = 'sort') {
     return shnea.treeToArray(this, idField, parentField, sortField);
 }
-/**
- * 배열을 트리구조로 변환
- * @param idField
- * @param parentField
- * @param sortField
- * @returns {*[]}
- */
 Array.prototype.arrayToTree = function(idField = 'id', parentField = 'upper_id', sortField = 'sort') {
     return shnea.arrayToTree(this, idField, parentField, sortField);
 }
-
-/**
- * 비밀번호 체크 함수
- * level 1 : 8자 이상
- * level 2 : 8자 이상, 대소문자 포함
- * level 3 : 8자 이상, 대소문자 포함, 반복 문자 금지
- * level 4 : 8자 이상, 대소문자 포함, 특수문자 포함 (default)
- * level 5 : 8자 이상, 대소문자 포함, 특수문자 포함, 반복 문자 금지
- * @param password
- * @param level
- * @returns {Object}
- */
 String.prototype.checkPassword = function(level = 4) {
     return shnea.checkPassword(this, level);
 }
-/**
- * 문자열 길이 검사
- * @param password
- * @param length
- * @returns {boolean}
- */
 String.prototype.checkLength = function(length) {
     return shnea.checkLength(this, length);
 }
-/**
- * 대소문자 포함 검사
- * @param password
- * @returns {boolean}
- */
 String.prototype.checkUpperLowerCase = function() {
     return shnea.checkUpperLowerCase(this);
 }
-
-/**
- * 특수문자 포함 검사
- * @param password
- * @returns {boolean}
- */
 String.prototype.checkSpecialChar = function() {
     return shnea.checkSpecialChar(this);
 }
-/**
- * 반복 문자 및 문자열 검사
- * @param password
- * @returns {boolean}
- */
 String.prototype.checkRepeatedChars = function() {
     return shnea.checkRepeatedChars(this);
+}
+Array.prototype.multiSortByKeys = function(keys, order = 'asc') {
+    return shnea.multiSortByKeys(this, keys, order);
+};
+
+Date.prototype.dateDifference = function(date) {
+    return shnea.dateDifference(this, date);
+}
+Date.prototype.getLastDayOfMonth = function() {
+    return shnea.getLastDayOfMonth(this);
+}
+Date.prototype.getWeekOfMonth = function(type = 1) {
+    return shnea.getWeekOfMonth(this, type);
+}
+Date.prototype.getDayOfWeek = function() {
+    return shnea.getDayOfWeek(this);
+}
+Date.prototype.addDays = function(days) {
+    return shnea.addDays(this, days);
+}
+Date.prototype.getAdjustedWeekendDate = function(type = 1) {
+    return shnea.getAdjustedWeekendDate(this, type);
+}
+Date.prototype.getDatesBetween = function(endDate) {
+    return shnea.getDatesBetween(this, endDate);
 }

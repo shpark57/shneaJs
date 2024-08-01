@@ -1,4 +1,4 @@
-# 공통함수 모음 2024-07-26
+# 공통함수 모음 2024-08-01
 
 `<script src="https://cdn.jsdelivr.net/gh/shpark57/shneaJs@main/shnea.js"></script>` 로 js 호출 <br/>
 `<script src="https://cdn.jsdelivr.net/gh/shpark57/shneaJs@main/shneaJq.js"></script>` 로 jquery 포함된 함수 호출<br/>
@@ -121,6 +121,50 @@ jquery 사용 시 아래 스크립트와 css 추가 필수 <br/>
             성공 : {isValid: true, reason: ""}
             실패 : {isValid: false, reason: "비밀번호는 대소문자를 모두 포함해야 합니다."}
 
+    29. 배열 안의 오브젝트 다중 키 기준  정렬 함수
+        shnea.multiSortByKeys(array, keys) or "배열".multiSortByKeys(keys)
+        const arr = [
+        { name: 'John', age: 30, height: 175 },
+        { name: 'Jane', age: 25, height: 160 },
+        { name: 'Smith', age: 30, height: 180 },
+        { name: 'Doe', age: 25, height: 165 }
+        ];
+        age 기준 내림차순 정렬 : shnea.multiSortByKeys(arr, 'age');    or shnea.multiSortByKeys(arr, {key:'age'});  or shnea.multiSortByKeys(arr, {key:'age' , order : 'asc'});   or  arr.multiSortByKeys('age');  
+        age 기준 오름차순 정렬 : shnea.multiSortByKeys(arr, {key:'age' , order : 'desc'});  or shnea.multiSortByKeys(arr, [{key:'age' , order : 'desc'}]);       arr.multiSortByKeys( {key:'age' , order : 'desc'});  
+        age, height 기준 내림차순 정렬 : shnea.multiSortByKeys(arr, ['age', 'height']);    shnea.multiSortByKeys(arr, [{key : 'age'}, {key : 'height'}]);  shnea.multiSortByKeys(arr, [{key : 'age'}, {key : 'height'}]); 
+        age, height 기준 오름차순 정렬 : shnea.multiSortByKeys(arr, [{key : 'age', order : 'desc'}, {key : 'height', order : 'desc'}]); 
+        age 내림차순 height 오름차순 정렬 : shnea.multiSortByKeys(arr, [{key : 'age'}, {key : 'height', order : 'desc'}]);   shnea.multiSortByKeys(arr, ['age', {key : 'height', order : 'desc'}]);
+
+
+        30. **날짜의 차이 구하기**
+        - `shnea.dateDifference(date1, date2)` 또는 `date1.dateDifference(date2)`
+        - 두 날짜 사이��� 일 수를 반환
+    
+        31. **특정 날짜가 속한 달의 마지막 날**
+            - `shnea.getLastDayOfMonth(date)` 또는 `date.getLastDayOfMonth()`
+            - 특정 날짜가 속한 달의 마지막 날을 반환
+    
+        32. **날짜가 몇째 주인지**
+            - `shnea.getWeekOfMonth(date, type)` 또는 `date.getWeekOfMonth(type)`
+            - type 1: 해당 월의 몇째 주인지 반환
+            - type 2: 해당 연도의 몇째 주인지 반환
+    
+        33. **특정 날짜가 무슨 요일인지**
+            - `shnea.getDayOfWeek(date)` 또는 `date.getDayOfWeek()`
+            - 특정 날짜의 요일을 반환
+    
+        34. **특정 날짜로부터 X일 더해지면 몇 월 며칠인지**
+            - `shnea.addDays(date, days)` 또는 `date.addDays(days)`
+            - 특정 날짜로부터 X일 더한 날짜를 반환
+    
+        35. **특정 날짜가 주말이면 금요일 또는 다음 주 월요일의 날짜**
+            - `shnea.getAdjustedWeekendDate(date, type)` 또는 `date.getAdjustedWeekendDate(type)`
+            - type 1: 주말이면 금요일의 날짜 반환
+            - type 2: 주말이면 다음 주 월요일의 날짜 반환
+    
+        36. **날짜와 날짜 사이의 날짜 모두 반환**
+            - `shnea.getDatesBetween(startDate, endDate)` 또는 `startDate.getDatesBetween(endDate)`
+            - 두 날짜 사이의 모든 날짜를 배열로 반환
 
 
 ## shneaJq.js
