@@ -166,6 +166,9 @@ jquery 사용 시 아래 스크립트와 css 추가 필수 <br/>
             - `shnea.getDatesBetween(startDate, endDate)` 또는 `startDate.getDatesBetween(endDate)`
             - 두 날짜 사이의 모든 날짜를 배열로 반환
 
+        37. ** 배열의 객체들 중에서 주어진 조건(객체)에 맞는 항목을 조회하는 함수. **
+            -queryObjectsByConditions(array, {key1 : value1 , key2 : value2}) or array.queryObjectsByConditions({key1 : value1 , key2 : value2})
+
 
 ## shneaJq.js
     1. 그리드의 열 병합

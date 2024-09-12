@@ -98,6 +98,37 @@ var shnea = (() => ({
     }
 
     /**
+     * 배열의 객체들 중에서 주어진 조건(객체)에 맞는 항목을 조회하는 함수.
+     * @param arr
+     * @param conditions
+     * @returns {*|*[]}
+     */
+    ,queryObjectsByConditions : (arr, conditions, mode = 'find') => {
+        // 조건을 검사하는 함수
+        const conditionChecker = (element) =>
+            Object.keys(conditions).every(key => element[key] === conditions[key]);
+
+        // 입력 모드에 따라 다른 동작 수행
+        switch (mode) {
+            case 'find':
+                // 첫 번째로 조건을 만족하는 객체를 반환
+                return arr.find(conditionChecker);
+
+            case 'filter':
+                // 조건을 만족하는 모든 객체를 배열로 반환
+                return arr.filter(conditionChecker);
+
+            case 'map':
+                // 조건을 만족하는 객체들의 인덱스를 배열로 반환
+                return arr.map((element, index) => conditionChecker(element) ? index : -1)
+                    .filter(index => index !== -1);
+
+            default:
+                return []
+        }
+    }
+
+    /**
      * 초를 시간:분:초로 변환
      * @param sec
      * @returns {string}
@@ -572,159 +603,58 @@ var shnea = (() => ({
         }
 
         return result;
-    },
-    /**
-     * 배열을 여러 키의 값으로 정렬하는 함수
-     * @param array
-     * @param keys
-     * @returns {*[]}
-     */
-    multiSortByKeys: (array, keys) => {
-        if (!Array.isArray(array) || (!Array.isArray(keys) && typeof keys !== 'object' && typeof keys !== 'string')) {
-            throw new Error('Invalid input');
-        }
-
-        // 단일 문자열 또는 객체를 배열로 변환
-        if (typeof keys === 'string') {
-            keys = [{ key: keys }];
-        } else if (!Array.isArray(keys)) {
-            keys = [keys];
-        } else {
-            // keys 배열 내의 단일 문자열을 객체로 변환
-            keys = keys.map(key => typeof key === 'string' ? { key: key } : key);
-        }
-
-        return array.sort((a, b) => {
-            for (let { key, order = 'asc' } of keys) {
-                if (a[key] < b[key]) {
-                    return order === 'desc' ? 1 : -1;
-                }
-                if (a[key] > b[key]) {
-                    return order === 'desc' ? -1 : 1;
-                }
-            }
-            return 0;
-        });
-    },
-    /**
-     * 날짜의 차이 구하기
-     * @param date1
-     * @param date2
-     * @returns {number}
-     */
-    dateDifference: (date1, date2) => {
-        const d1 = new Date(date1);
-        const d2 = new Date(date2);
-        const diffTime = Math.abs(d2 - d1);
-        return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    },
-
-    /**
-     * 특정 날짜가 속한 달의 마지막 날
-     * @param date
-     * @returns {Date}
-     */
-    getLastDayOfMonth: (date) => {
-        const d = new Date(date);
-        return new Date(d.getFullYear(), d.getMonth() + 1, 0);
-    },
-
-    /**
-     * 날짜가 몇째 주인지
-     * @param date
-     * @param type
-     * @returns {number}
-     */
-    getWeekOfMonth: (date, type = 1) => {
-        const d = new Date(date);
-        const firstDay = new Date(d.getFullYear(), d.getMonth(), 1).getDay();
-        const adjustedDate = d.getDate() + firstDay - 1;
-        if (type === 1) {
-            return Math.ceil(adjustedDate / 7);
-        } else if (type === 2) {
-            const startOfYear = new Date(d.getFullYear(), 0, 1);
-            const pastDaysOfYear = (d - startOfYear) / (1000 * 60 * 60 * 24);
-            return Math.ceil((pastDaysOfYear + startOfYear.getDay() + 1) / 7);
-        }
-    },
-
-    /**
-     * 특정 날짜가 무슨 요일인지
-     * @param date
-     * @returns {string}
-     */
-    getDayOfWeek: (date) => {
-        const days = ['일', '월', '화', '수', '목', '금', '토'];
-        const d = new Date(date);
-        return days[d.getDay()];
-    },
-
-    /**
-     *  특정 날짜로부터 X일 더해지면 몇 월 며칠인지
-     * @param date
-     * @param days
-     * @returns {Date}
-     */
-    addDays: (date, days) => {
-        const d = new Date(date);
-        d.setDate(d.getDate() + days);
-        return d;
-    },
-
-
-    /**
-     * 특정 날짜가 주말이면 금요일 또는 다음 주 월요일의 날짜
-     * @param date
-     * @param type
-     * @returns {Date}
-     */
-    getAdjustedWeekendDate: (date, type = 1) => {
-        const d = new Date(date);
-        const day = d.getDay();
-        if (day === 0) { // Sunday
-            d.setDate(d.getDate() + (type === 1 ? -2 : 1)); // Friday or next Monday
-        } else if (day === 6) { // Saturday
-            d.setDate(d.getDate() + (type === 1 ? -1 : 2)); // Friday or next Monday
-        }
-        return d;
-    },
-
-    /**
-     * 날짜와 날짜 사이의 날짜 모두 반환
-     * @param startDate
-     * @param endDate
-     * @returns {*[]}
-     */
-    getDatesBetween: (startDate, endDate) => {
-        const dates = [];
-        const currentDate = new Date(startDate);
-        const end = new Date(endDate);
-
-        while (currentDate <= end) {
-            dates.push(new Date(currentDate));
-            currentDate.setDate(currentDate.getDate() + 1);
-        }
-
-        return dates;
     }
+
 }))();
 
 
+/**
+ * 문자열을 카멜케이스로 변환
+ * @returns {string}
+ */
 String.prototype.toCamelCase = function() {
     return shnea.toCamelCase(this);
 };
+
+/**
+ * 문자열을 스네이크케이스로 변환
+ * @param separator
+ * @returns {string}
+ */
 String.prototype.toSnakeCase = function(separator = '_') {
     return shnea.toSnakeCase(this, separator);
 };
+
+
+
+/**
+ * 하나의 이모지를 유니코드로 변환
+ * @returns {string}
+ */
 String.prototype.emojiToUnicode = function() {
     return shnea.emojiToUnicode(this);
 }
+
+/**
+ * 이모지를 유니코드로 변환
+ * @returns {string}
+ */
 String.prototype.extractAndReplaceEmojis = function() {
     return shnea.extractAndReplaceEmojis(this);
 }
+
+/**
+ * 유니코드를 이모지로 변환
+ * @returns {string}
+ */
 String.prototype.decodeUnicodeToEmoji = function() {
     return shnea.decodeUnicodeToEmoji(this);
 }
+
+/**
+ * HTML 태그 제거
+ * @returns {string}
+ */
 String.prototype.removeHtmlTags = function() {
     return shnea.removeHtmlTags(this);
 }
@@ -772,6 +702,9 @@ Array.prototype.treeToArray = function(idField = 'id', parentField = 'upper_id',
 }
 Array.prototype.arrayToTree = function(idField = 'id', parentField = 'upper_id', sortField = 'sort') {
     return shnea.arrayToTree(this, idField, parentField, sortField);
+}
+Array.prototype.queryObjectsByConditions = function(conditions, mode = 'find') {
+    return shnea.queryObjectsByConditions(this, conditions, mode);
 }
 String.prototype.checkPassword = function(level = 4) {
     return shnea.checkPassword(this, level);
