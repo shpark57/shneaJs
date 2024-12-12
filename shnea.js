@@ -603,8 +603,124 @@ var shnea = (() => ({
         }
 
         return result;
-    }
+    },
+    multiSortByKeys: function (array, keys) {
+        if (!Array.isArray(array)) {
+            throw new Error('첫 번째 인자는 배열이어야 합니다.');
+        }
+        if (!keys || (typeof keys !== 'string' && !Array.isArray(keys))) {
+            throw new Error('두 번째 인자는 문자열 또는 배열이어야 합니다.');
+        }
 
+        // 키를 배열 형태로 정리
+        if (typeof keys === 'string') {
+            keys = [{ key: keys, order: 'asc' }];
+        } else if (!Array.isArray(keys)) {
+            keys = [keys];
+        } else {
+            keys = keys.map((k) => (typeof k === 'string' ? { key: k, order: 'asc' } : k));
+        }
+
+        // 정렬 함수
+        return [...array].sort((a, b) => {
+            for (const { key, order = 'asc' } of keys) {
+                if (a[key] > b[key]) return order === 'asc' ? 1 : -1;
+                if (a[key] < b[key]) return order === 'asc' ? -1 : 1;
+            }
+            return 0;
+        });
+    },
+      // 30. 날짜의 차이 구하기
+      dateDifference(date1, date2) {
+        const d1 = new Date(date1);
+        const d2 = new Date(date2);
+        // 시간을 00:00:00으로 설정
+        d1.setHours(0, 0, 0, 0);
+        d2.setHours(0, 0, 0, 0);
+        const diffTime = Math.abs(d1 - d2);
+        return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      },
+
+      // 31. 특정 날짜가 속한 달의 마지막 날 반환
+      getLastDayOfMonth(date) {
+        const d = new Date(date);
+        return new Date(d.getFullYear(), d.getMonth() + 1, 0);
+      },
+
+      // 32. 날짜가 몇째 주인지 반환
+      getWeekOfMonth(date, type = 1) {
+        const d = new Date(date);
+        const firstDay = new Date(d.getFullYear(), d.getMonth(), 1);
+        const dayOffset = firstDay.getDay();
+        const weekOfMonth = Math.ceil((d.getDate() + dayOffset) / 7);
+
+        if (type === 2) {
+          const startOfYear = new Date(d.getFullYear(), 0, 1);
+          const dayOfYear = Math.floor((d - startOfYear) / (1000 * 60 * 60 * 24));
+          return Math.ceil((dayOfYear + startOfYear.getDay() + 1) / 7);
+        }
+
+        return weekOfMonth;
+      },
+
+      // 33. 특정 날짜의 요일 반환
+      getDayOfWeek(date , type = null) {
+        var days = [];
+        if(type == 'ko'){
+            days = ['일', '월', '화', '수', '목', '금', '토'];
+        }else if (type == 'en'){
+            days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        }else{
+            days = [0, 1, 2, 3, 4, 5, 6];
+        }
+
+        return days[new Date(date).getDay()];
+      },
+
+      // 34. 특정 날짜로부터 X일 더한 날짜 반환
+      addDays(date, days) {
+        const d = new Date(date);
+        d.setDate(d.getDate() + days);
+        return d;
+      },
+
+      // 35. 주말 조정 날짜 반환
+      getAdjustedWeekendDate(date, type = 1) {
+          const d = new Date(date);
+          const day = d.getDay();
+
+          // 토요일(6)일 경우
+          if (day === 6) {
+            return type === 1 ? d.addDays(- 1) : d.addDays(+ 2);
+          }
+
+          // 일요일(0)일 경우
+          if (day === 0) {
+            return type === 1 ? d.addDays(- 2) : d.addDays(+ 1);
+          }
+
+          // 주말이 아닌 평일은 그대로 반환
+          return d;
+      },
+
+      // 36. 두 날짜 사이의 모든 날짜 반환
+      getDatesBetween(startDate, endDate) {
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        const dates = [];
+
+        while (start <= end) {
+          dates.push(new Date(start));
+          start.setDate(start.getDate() + 1);
+        }
+
+        return dates;
+      },
+
+      // 37. 조건에 맞는 객체 조회
+      queryObjectsByConditions(array, conditions) {
+        return array.filter(obj => Object.keys(conditions).every(key => obj[key] === conditions[key]));
+      },
 }))();
 
 
@@ -734,8 +850,8 @@ Date.prototype.getLastDayOfMonth = function() {
 Date.prototype.getWeekOfMonth = function(type = 1) {
     return shnea.getWeekOfMonth(this, type);
 }
-Date.prototype.getDayOfWeek = function() {
-    return shnea.getDayOfWeek(this);
+Date.prototype.getDayOfWeek = function(type = null) {
+    return shnea.getDayOfWeek(this , type);
 }
 Date.prototype.addDays = function(days) {
     return shnea.addDays(this, days);

@@ -151,7 +151,10 @@ jquery 사용 시 아래 스크립트와 css 추가 필수 <br/>
     
         33. **특정 날짜가 무슨 요일인지**
             - `shnea.getDayOfWeek(date)` 또는 `date.getDayOfWeek()`
+            - `shnea.getDayOfWeek(date , 'ko')` 또는 `date.getDayOfWeek('ko')`
+            - `shnea.getDayOfWeek(date , 'en')` 또는 `date.getDayOfWeek('en')`
             - 특정 날짜의 요일을 반환
+            - 0: 일요일, 1: 월요일, 2: 화요일, 3: 수요일, 4: 목요일, 5: 금요일, 6: 토요일
     
         34. **특정 날짜로부터 X일 더해지면 몇 월 며칠인지**
             - `shnea.addDays(date, days)` 또는 `date.addDays(days)`
