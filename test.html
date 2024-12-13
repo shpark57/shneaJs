@@ -48,6 +48,7 @@ jquery-ui.js
             });
         })
 
+        let file_resize; // 전역 변수로 파일 정보를 저장합니다.
         /**
          * 파일을 선택하면 파일의 정보를 표시하고 파일의 용량이 1M이 넘으면 리사이징을 진행한다.
          */
@@ -56,7 +57,6 @@ jquery-ui.js
             $("#file2Txt").text("리사이징 진행" )
             var file = $("#file")[0].files[0]
             var MAX_SIZE = 1 * 1024 * 1024  // 1M
-            var file_resize
             if(file.size > MAX_SIZE){
                 file_resize = await shnea.getCompressImage(file , MAX_SIZE , file.name)
             }else{
@@ -75,6 +75,22 @@ jquery-ui.js
             // 'txt' 요소에 파일 정보 표시
             $("#txt").text("파일 명: " + file.name + "\n파일 용량: " + file.size);
         });
+
+        $('#downloadButton').on('click', function () {
+            if (!file_resize) {
+                alert("다운로드할 파일이 없습니다.");
+                return;
+            }
+            const blob = new Blob([file_resize], { type: file_resize.type });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = file_resize.name; // 파일 이름 설정
+            a.click();
+
+            URL.revokeObjectURL(url); // 메모리 해제
+        });
     });
 </script>
 </body>
@@ -85,6 +101,9 @@ jquery-ui.js
 이미지 리사이징
 </br>
 <input type="file" id="file">
+
+
+<button id="downloadButton">다운로드</button>
 </br>
 원본 이미지 그대로 :
 </br>
