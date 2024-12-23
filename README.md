@@ -170,8 +170,12 @@ jquery 사용 시 아래 스크립트와 css 추가 필수 <br/>
             - 두 날짜 사이의 모든 날짜를 배열로 반환
 
         37. ** 배열의 객체들 중에서 주어진 조건(객체)에 맞는 항목을 조회하는 함수. **
-            -queryObjectsByConditions(array, {key1 : value1 , key2 : value2}) or array.queryObjectsByConditions({key1 : value1 , key2 : value2})
+            -queryObjectsByConditions(array, {key1 : value1 , key2 : value2} ,'find') or array.queryObjectsByConditions({key1 : value1 , key2 : value2} , 'filter')
 
+        38. 그룹화된 데이터에 대해 동적 키로 카운트 및 다양한 통계 계산을 수행하는 함수
+            - shnea.calculateByDynamicKey(array,  ['DEPTNAME', 'DEPTNO'] , 'USERTYPE', [{ field: 'value', type: 'sum' },{ field: 'value', type: 'avg' },{ field: 'value', type: 'max' },{ field: 'value', type: 'min' }]);
+        39.  데이터를 조인하고 그룹화 및 통계를 계산하는 함수  데이터 순서 중요
+            - shnea.queryData(data1 ,data2 , '기준키' , { groupBy: [ 'KEY1' , 'KEY2' ],  aggregations: [{ type: 'count', field: 'KEY1', alias: 'count_key1' },{ type: 'sum', field: 'cnt', alias: 'total_cnt' },{ type: 'avg', field: 'cnt', alias: 'avg_cnt' }]})
 
 ## shneaJq.js
     1. 그리드의 열 병합

@@ -611,7 +611,7 @@ var shnea = (() => ({
 
         return result;
     },
-    multiSortByKeys: function (array, keys) {
+    multiSortByKeys: (array, keys) => {
         if (!Array.isArray(array)) {
             throw new Error('첫 번째 인자는 배열이어야 합니다.');
         }
@@ -638,7 +638,7 @@ var shnea = (() => ({
         });
     },
       // 30. 날짜의 차이 구하기
-      dateDifference(date1, date2) {
+      dateDifference : (date1, date2) => {
         const d1 = new Date(date1);
         const d2 = new Date(date2);
         // 시간을 00:00:00으로 설정
@@ -649,13 +649,13 @@ var shnea = (() => ({
       },
 
       // 31. 특정 날짜가 속한 달의 마지막 날 반환
-      getLastDayOfMonth(date) {
+      getLastDayOfMonth : (date) =>  {
         const d = new Date(date);
         return new Date(d.getFullYear(), d.getMonth() + 1, 0);
       },
 
       // 32. 날짜가 몇째 주인지 반환
-      getWeekOfMonth(date, type = 1) {
+      getWeekOfMonth : (date, type = 1) => {
         const d = new Date(date);
         const firstDay = new Date(d.getFullYear(), d.getMonth(), 1);
         const dayOffset = firstDay.getDay();
@@ -671,7 +671,7 @@ var shnea = (() => ({
       },
 
       // 33. 특정 날짜의 요일 반환
-      getDayOfWeek(date , type = null) {
+      getDayOfWeek : (date , type = null) => {
         var days = [];
         if(type == 'ko'){
             days = ['일', '월', '화', '수', '목', '금', '토'];
@@ -692,7 +692,7 @@ var shnea = (() => ({
       },
 
       // 35. 주말 조정 날짜 반환
-      getAdjustedWeekendDate(date, type = 1) {
+      getAdjustedWeekendDate : (date, type = 1) => {
           const d = new Date(date);
           const day = d.getDay();
 
@@ -711,7 +711,7 @@ var shnea = (() => ({
       },
 
       // 36. 두 날짜 사이의 모든 날짜 반환
-      getDatesBetween(startDate, endDate) {
+      getDatesBetween : (startDate, endDate) => {
         const start = new Date(startDate);
         const end = new Date(endDate);
         const dates = [];
@@ -725,9 +725,197 @@ var shnea = (() => ({
       },
 
       // 37. 조건에 맞는 객체 조회
-      queryObjectsByConditions(array, conditions) {
-        return array.filter(obj => Object.keys(conditions).every(key => obj[key] === conditions[key]));
-      },
+       /**
+         * 배열에서 여러개의 특정 키 벨류로 객체,배역,index 찾기
+         * ex ) Utils.queryObjectsByConditions((GLOBAL.bascVlu.list, {{id : '42' , useYn : 'Y'}, 'find')
+         * ex ) Utils.queryObjectsByConditions((GLOBAL.bascVlu.list, {id : '42' , useYn : 'Y'}, 'filter')
+         * ex ) Utils.queryObjectsByConditions((GLOBAL.bascVlu.list, {id : '42' , useYn : 'Y'}, 'index')
+         * @param arr
+         * @param conditionsㅉ
+         * @param mode  default find
+         * @returns {*|*[]}
+         */
+        queryObjectsByConditions : (arr, conditions, mode = 'find') => {
+            // 조건을 검사하는 함수
+            const conditionChecker = (element) =>
+                Object.keys(conditions).every(key => element[key] === conditions[key]);
+
+            // 입력 모드에 따라 다른 동작 수행
+            switch (mode) {
+                case 'find':
+                    // 첫 번째로 조건을 만족하는 객체를 반환
+                    return arr.find(conditionChecker);
+
+                case 'filter':
+                    // 조건을 만족하는 모든 객체를 배열로 반환
+                    return arr.filter(conditionChecker);
+
+                case 'index':
+                    // 조건을 만족하는 객체들의 인덱스를 배열로 반환
+                    return arr.map((element, index) => conditionChecker(element) ? index : -1)
+                        .filter(index => index !== -1);
+
+                default:
+                    return []
+            }
+        },
+    /**
+     *
+     * 38. 그룹화된 데이터에 대해 동적 키로 카운트 및 다양한 통계 계산을 수행하는 함수
+     * 사용법
+     * const groupBy = ['DEPTNAME', 'DEPTNO']; // 그룹화 기준
+     * const keyToCount = 'USERTYPE'; // 동적으로 개수를 셀 키
+     * const operations = [
+     *     { field: 'value', type: 'sum' },
+     *     { field: 'value', type: 'avg' },
+     *     { field: 'value', type: 'max' },
+     *     { field: 'value', type: 'min' },
+     * ];
+     *
+     * const result = shnea.calculateByDynamicKey(list, groupBy, keyToCount, operations);
+     */
+    calculateByDynamicKey :  (data, groupBy, keyToCount, operations = []) =>{
+        // 그룹화 처리
+        const groupedData = data.reduce((groups, item) => {
+            // 그룹 키 생성 (groupBy 필드값을 결합하여 고유 키 생성)
+            const groupKey = groupBy.map(key => item[key] || 'undefined').join('|');
+
+            // 그룹이 없다면 초기화
+            if (!groups[groupKey]) {
+                groups[groupKey] = {
+                    count: 0, // 총 항목 수 카운트 초기화
+                    // 그룹화된 필드값 저장
+                    ...groupBy.reduce((obj, key) => {
+                        obj[key] = item[key];
+                        return obj;
+                    }, {}),
+                };
+
+                // 통계 초기화
+                operations.forEach(({ field, type }) => {
+                    if (type === 'sum' || type === 'avg') {
+                        groups[groupKey][`sum_${field}`] = 0; // 합계 초기화
+                    }
+                    if (type === 'max') {
+                        groups[groupKey][`max_${field}`] = -Infinity; // 최대값 초기화
+                    }
+                    if (type === 'min') {
+                        groups[groupKey][`min_${field}`] = Infinity; // 최소값 초기화
+                    }
+                });
+            }
+
+            // 동적 키 값 가져오기
+            const keyValue = item[keyToCount];
+
+            // 동적 키의 카운트 초기화 및 증가
+            if (!groups[groupKey][keyValue]) {
+                groups[groupKey][keyValue] = 0;
+            }
+            groups[groupKey][keyValue] += 1; // 카운트 증가
+
+            // 통계 연산 수행
+            operations.forEach(({ field, type }) => {
+                const value = parseFloat(item[field]) || 0; // 숫자 값으로 변환
+
+                if (type === 'sum' || type === 'avg') {
+                    groups[groupKey][`sum_${field}`] += value; // 합계 증가
+                }
+                if (type === 'max') {
+                    groups[groupKey][`max_${field}`] = Math.max(groups[groupKey][`max_${field}`], value); // 최대값 계산
+                }
+                if (type === 'min') {
+                    groups[groupKey][`min_${field}`] = Math.min(groups[groupKey][`min_${field}`], value); // 최소값 계산
+                }
+            });
+
+            // 총 카운트 증가
+            groups[groupKey].count += 1;
+
+            return groups;
+        }, {});
+
+        // 평균 계산 (평균은 총 합계를 항목 수로 나누어 계산)
+        Object.values(groupedData).forEach(group => {
+            operations.forEach(({ field, type }) => {
+                if (type === 'avg') {
+                    group[`avg_${field}`] =
+                        group.count > 0 ? group[`sum_${field}`] / group.count : 0;
+                }
+            });
+        });
+
+        // 결과를 배열로 변환 (객체에서 배열로 변환하여 반환)
+        return Object.values(groupedData);
+    },
+    /**
+     * 39. 데이터를 조인하고 그룹화 및 통계를 계산하는 함수
+     * @param {Array} data1 - 기준 데이터 배열
+     * @param {Array} data2 - 조인할 데이터 배열
+     * @param {string} joinKey - 두 데이터 배열을 조인할 키
+     * @param {Object} options - 옵션 객체
+     *        - groupBy: 그룹화 기준 키 배열
+     *        - aggregations: 통계 연산 정보 배열 [{ type, field, alias }]
+     *           - type: 통계 유형 ('sum', 'count', 'average', 'max', 'min')
+     *           - field: 계산 대상 필드
+     *           - alias: 결과 필드 이름 (선택)
+     * @returns {Array} - 조인된 데이터와 통계 결과를 포함한 배열
+     */
+    queryData : (data1, data2, joinKey, options = {}) => {
+        const { groupBy, aggregations } = options;
+
+        // 1. Join - data1 기준으로 data2 데이터를 연결
+        const joinedData = data1.map(item1 => {
+            const relatedItems = data2.filter(item2 => item2[joinKey] === item1[joinKey]);
+            const details = relatedItems.map(item2 => ({ ...item1, ...item2 }));
+            return { ...item1, details };
+        });
+
+        // 2. 통계 연산 추가
+        joinedData.forEach(entry => {
+            const { details } = entry;
+
+            // Grouping 처리
+            const groupedData = groupBy
+                ? details.reduce((groups, item) => {
+                    const groupKey = groupBy.map(key => item[key] || 'undefined').join('|');
+                    if (!groups[groupKey]) groups[groupKey] = [];
+                    groups[groupKey].push(item);
+                    return groups;
+                }, {})
+                : { all: details };
+
+            // Aggregations
+            const groupStats = Object.entries(groupedData).map(([groupKey, items]) => {
+                const aggregated = { groupKey };
+
+                aggregations.forEach(({ type, field, alias }) => {
+                    const values = items.map(item => parseFloat(item[field]) || 0);
+
+                    if (type === 'sum') {
+                        aggregated[alias || `sum_${field}`] = values.reduce((acc, val) => acc + val, 0);
+                    } else if (type === 'count') {
+                        aggregated[alias || `count_${field}`] = values.length;
+                    } else if (type === 'avg') {
+                        const sum = values.reduce((acc, val) => acc + val, 0);
+                        aggregated[alias || `avg_${field}`] = values.length > 0 ? sum / values.length : 0;
+                    } else if (type === 'max') {
+                        aggregated[alias || `max_${field}`] = Math.max(...values);
+                    } else if (type === 'min') {
+                        aggregated[alias || `min_${field}`] = Math.min(...values);
+                    }
+                });
+
+                return aggregated;
+            });
+
+            entry.stats = groupStats;
+        });
+
+        return joinedData;
+    }
+
+
 }))();
 
 
@@ -846,6 +1034,12 @@ String.prototype.checkRepeatedChars = function() {
 Array.prototype.multiSortByKeys = function(keys, order = 'asc') {
     return shnea.multiSortByKeys(this, keys, order);
 };
+Array.prototype.calculateByDynamicKey = function(groupBy, keyToCount, operations = []) {
+    return shnea.calculateByDynamicKey(this, groupBy, keyToCount, operations);
+};
+Array.prototype.queryData = function( data2, joinKey, options = {}) {
+    return shnea.queryData(this, data2, joinKey, options);
+};
 
 Date.prototype.dateDifference = function(date) {
     return shnea.dateDifference(this, date);
@@ -868,3 +1062,5 @@ Date.prototype.getAdjustedWeekendDate = function(type = 1) {
 Date.prototype.getDatesBetween = function(endDate) {
     return shnea.getDatesBetween(this, endDate);
 }
+
+
