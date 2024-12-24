@@ -1,11 +1,10 @@
-// Description: shnea 라이브러리
-var shnea = (() => ({
+const shnea = (() => ({
     /**
      * 문자열을 카멜케이스로 변환
      * @param str
      * @returns {string}
      */
-    toCamelCase: (str) =>  {
+    toCamelCase: (str) => {
         return str.toLowerCase().replace(/[-_\s]+(.)?/g, (match, char) => char ? char.toUpperCase() : '');
     }
     /**
@@ -14,7 +13,8 @@ var shnea = (() => ({
      * @param separator
      * @returns {string}
      */
-    ,toSnakeCase: (str, separator = '_') =>  {
+    ,
+    toSnakeCase: (str, separator = '_') => {
         return str.replace(/([a-z])([A-Z])/g, `$1${separator}$2`).toLowerCase();
     }
     /**
@@ -22,7 +22,8 @@ var shnea = (() => ({
      * @param str
      * @returns {boolean}
      */
-    ,isCamelCase  : (str) =>  {
+    ,
+    isCamelCase: (str) => {
         return /^[a-z]+([A-Z][a-z]*)+$/.test(str);
     }
     /**
@@ -30,7 +31,8 @@ var shnea = (() => ({
      * @param str
      * @returns {boolean}
      */
-    ,isSnakeCase  : (str) =>  {
+    ,
+    istrakeCase: (str) => {
         return /^[a-z]+(_[a-z]+)*$/.test(str);
     }
 
@@ -39,7 +41,8 @@ var shnea = (() => ({
      * @param ssn
      * @returns {boolean}
      */
-    ,isValidSSN: (ssn) =>  {
+    ,
+    isValidSSN: (ssn) => {
 
         // 하이픈을 제거하고 숫자만 남기기
         ssn = ssn.replace('-', '');
@@ -69,7 +72,8 @@ var shnea = (() => ({
      * @param ssn
      * @returns {*}
      */
-    ,maskSSN : (ssn) => {
+    ,
+    maskSSN: (ssn) => {
         ssn = ssn.replace('-', '');
         return ssn.replace(/(\d{6})(\d{1})\d{6}/, '$1-$2******');
     }
@@ -80,8 +84,11 @@ var shnea = (() => ({
      * @param value
      * @returns {*|*[]}
      */
-    ,findIndexByKeyValue : (arr, key, value) => {
-        if (!key) { return [];}
+    ,
+    findIndexByKeyValue: (arr, key, value) => {
+        if (!key) {
+            return [];
+        }
         return arr.map((element, index) => element[key] === value ? index : -1).filter(index => index !== -1);
     }
 
@@ -91,41 +98,13 @@ var shnea = (() => ({
      * @param key
      * @returns {*|*[]}
      */
-    ,findIndexByKey : (arr, key) => {
-        if (!key) { return [];}
+    ,
+    findIndexByKey: (arr, key) => {
+        if (!key) {
+            return [];
+        }
         return arr.map((item, index) => item.hasOwnProperty(key) ? index : -1)
             .filter(index => index !== -1);
-    }
-
-    /**
-     * 배열의 객체들 중에서 주어진 조건(객체)에 맞는 항목을 조회하는 함수.
-     * @param arr
-     * @param conditions
-     * @returns {*|*[]}
-     */
-    ,queryObjectsByConditions : (arr, conditions, mode = 'find') => {
-        // 조건을 검사하는 함수
-        const conditionChecker = (element) =>
-            Object.keys(conditions).every(key => element[key] === conditions[key]);
-
-        // 입력 모드에 따라 다른 동작 수행
-        switch (mode) {
-            case 'find':
-                // 첫 번째로 조건을 만족하는 객체를 반환
-                return arr.find(conditionChecker);
-
-            case 'filter':
-                // 조건을 만족하는 모든 객체를 배열로 반환
-                return arr.filter(conditionChecker);
-
-            case 'map':
-                // 조건을 만족하는 객체들의 인덱스를 배열로 반환
-                return arr.map((element, index) => conditionChecker(element) ? index : -1)
-                    .filter(index => index !== -1);
-
-            default:
-                return []
-        }
     }
 
     /**
@@ -133,7 +112,8 @@ var shnea = (() => ({
      * @param sec
      * @returns {string}
      */
-    ,secToTime : (sec = 0) => {
+    ,
+    secToTime: (sec = 0) => {
         const padWithZeros = (num) => num.toString().padStart(2, '0');
 
         const days = Math.floor(sec / 86400);
@@ -150,7 +130,8 @@ var shnea = (() => ({
      * @param emoji
      * @returns {string}
      */
-    ,emojiToUnicode : (emoji) => {
+    ,
+    emojiToUnicode: (emoji) => {
         return Array.from(emoji).map(char => {
             let hex = char.codePointAt(0).toString(16).toUpperCase();
             return '&#x' + hex + ';';
@@ -161,7 +142,8 @@ var shnea = (() => ({
      * @param str
      * @returns {*}
      */
-    ,extractAndReplaceEmojis : (str) => {
+    ,
+    extractAndReplaceEmojis: (str) => {
         const emojiRegex = /([\u203C-\u3299\uD83C-\uDBFF\uDC00-\uDFFF\uFE0F])/g;
         return str.replace(emojiRegex, match => shnea.emojiToUnicode(match));
     }
@@ -170,7 +152,8 @@ var shnea = (() => ({
      * @param str
      * @returns {*}
      */
-    ,decodeUnicodeToEmoji : (str) => {
+    ,
+    decodeUnicodeToEmoji: (str) => {
         return str.replace(/&#x([A-F0-9]+);/g, (match, hex) => {
             return String.fromCodePoint(parseInt(hex, 16));
         });
@@ -180,7 +163,8 @@ var shnea = (() => ({
      * @param str
      * @returns {*}
      */
-    ,removeHtmlTags : (str) => {
+    ,
+    removeHtmlTags: (str) => {
         return str.replace(/<[^>]*>?/g, '');
     }
 
@@ -189,7 +173,8 @@ var shnea = (() => ({
      * @param value
      * @returns {boolean}
      */
-    , isEmpty : (value) => {
+    ,
+    isEmpty: (value) => {
         if (!value) {
             return true; // falsey 값 (0, '', false, null, undefined, NaN) 체크
         } else if (Array.isArray(value) && value.length === 0) {
@@ -223,7 +208,7 @@ var shnea = (() => ({
      * @param phoneNumber
      * @returns {*|string}
      */
-    formatPhoneNumber : (phoneNumber) => {
+    formatPhoneNumber: (phoneNumber) => {
         if (!phoneNumber) {
             return '';
         }
@@ -254,7 +239,8 @@ var shnea = (() => ({
      * @param email
      * @returns {boolean}
      */
-    ,isValidEmail : (email) => {
+    ,
+    isValidEmail: (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     }
@@ -265,53 +251,47 @@ var shnea = (() => ({
      * @param origin_nm
      * @param callback
      */
-    ,compressImage: function(file, maxSizeInBytes, origin_nm, callback) {
+    ,
+    compressImage: function (file, maxSizeInBytes, origin_nm, callback) {
         const reader = new FileReader();
-        reader.onload = function(event) {
-            let img = new Image();
-            img.onload = function() {
-                let canvas = document.createElement('canvas');
+        reader.onload = function (event) {
+            const img = new Image();
+            img.onload = function () {
+                const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
 
                 let width = img.width;
                 let height = img.height;
                 let ratio = 1;
-                const step = 0.02; // 압축 단계를 2%씩 줄임
 
+                const step = 0.02; // 압축 단계 2프로씩 줄임.  0.1 (10%)씩 줄일 경우 100KB 근처까지도 떨어짐.
                 let compressedSize = file.size;
-
+                const blob = canvas.toDataURL(file.type);
                 // 압축 단계별로 크기를 확인하여 maxSizeInBytes에 가까워질 때까지 반복
-                while (compressedSize > maxSizeInBytes && ratio > 0.1) {
-                    ratio -= step; // 압축 단계 줄임
-                    width *= ratio;
-                    height *= ratio;
-
+                while (compressedSize > maxSizeInBytes && ratio > 0) {
                     canvas.width = width;
                     canvas.height = height;
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
                     ctx.drawImage(img, 0, 0, width, height);
 
-                    // Blob 생성하여 크기 확인
-                    canvas.toBlob(function(blob) {
-                        compressedSize = blob.size; // 정확한 Blob 크기
-                    }, file.type);
+                    const blob = canvas.toDataURL(file.type);
+                    compressedSize = blob.length * (3 / 4); // Base64로 인코딩된 크기 계산
+
+                    ratio -= step; // 압축 단계를 줄임
+
+                    width *= ratio;
+                    height *= ratio;
                 }
 
-                // 최종 Blob 변환 후 콜백 호출
-                canvas.toBlob(function(blob) {
-                    const compressedFile = new File([blob], origin_nm, { type: blob.type });
-                    callback(compressedFile);
+                // 최종 압축된 이미지를 Blob으로 변환하여 콜백 함수 호출
+                canvas.toBlob(function (blob) {
+                    var file = new File([blob], origin_nm, {type: blob.type});
+                    callback(file);
                 }, file.type);
-
-                // 메모리 해제
-                img = null;
-                canvas = null;
             };
             img.src = event.target.result;
         };
         reader.readAsDataURL(file);
     }
-
     /**
      * 조절된 이미지를 편하게 불러오기 위한 함수
      * @param file
@@ -319,9 +299,10 @@ var shnea = (() => ({
      * @param origin_nm
      * @returns {Promise<unknown>}
      */
-    ,getCompressImage : async function (file, maxSizeInBytes, origin_nm){
+    ,
+    getCompressImage: async function (file, maxSizeInBytes, origin_nm) {
         return new Promise((resolve, reject) => {
-            shnea.compressImage(file, maxSizeInBytes, origin_nm, function(file) {
+            shnea.compressImage(file, maxSizeInBytes, origin_nm, function (file) {
                 resolve(file);
             });
         });
@@ -333,7 +314,8 @@ var shnea = (() => ({
      * @param origin_nm
      * @param callback
      */
-    ,urlImgToFile : function(imageUrl, origin_nm , callback){
+    ,
+    urlImgToFile: function (imageUrl, origin_nm, callback) {
         var xhr = new XMLHttpRequest();
         xhr.open("GET", imageUrl, true);
         xhr.responseType = "blob";
@@ -341,7 +323,7 @@ var shnea = (() => ({
         xhr.onload = function () {
             if (xhr.status === 200) {
                 var blob = xhr.response;
-                var file = new File([blob], origin_nm, { type : blob.type});
+                var file = new File([blob], origin_nm, {type: blob.type});
                 callback(file);
             }
         };
@@ -353,9 +335,10 @@ var shnea = (() => ({
      * @param origin_nm
      * @returns {Promise<unknown>}
      */
-    ,getFileFromUrl : async function (imageUrl,origin_nm ) {
+    ,
+    getFileFromUrl: async function (imageUrl, origin_nm) {
         return new Promise((resolve, reject) => {
-            shnea.urlImgToFile(imageUrl, origin_nm, function(file) {
+            shnea.urlImgToFile(imageUrl, origin_nm, function (file) {
                 resolve(file);
             });
         });
@@ -367,7 +350,8 @@ var shnea = (() => ({
      * @param {string} format - 출력할 날짜 형식 (기본값: 'yyyy-MM-dd HH:mm:ss').
      * @returns {string} 지정된 형식으로 변환된 날짜 문자열 또는 잘못된 입력인 경우 오류 메시지.
      */
-    ,parseDate: (input, format = 'yyyy-MM-dd HH:mm:ss') => {
+    ,
+    parseDate: (input, format = 'yyyy-MM-dd HH:mm:ss') => {
         let date;
         if (input instanceof Date) {
             date = input;
@@ -411,7 +395,8 @@ var shnea = (() => ({
      * @param sortField
      * @returns {*[]}
      */
-    , arrayToTree : (array, idField = 'id', parentField = 'upper_id', sortField = 'sort')  => {
+    ,
+    arrayToTree: (array, idField = 'id', parentField = 'upper_id', sortField = 'sort') => {
         const nodes = {};
         const roots = [];
 
@@ -452,12 +437,13 @@ var shnea = (() => ({
      * @param sortField
      * @returns {*[]}
      */
-    , treeToArray : (tree, idField = 'id', parentField = 'upper_id', sortField = 'sort') => {
+    ,
+    treeToArray: (tree, idField = 'id', parentField = 'upper_id', sortField = 'sort') => {
         const result = [];
 
         // 트리를 순회하면서 배열로 변환
         const traverse = (node) => {
-            const { children, ...rest } = node;  // children을 제외한 나머지 필드 가져오기
+            const {children, ...rest} = node;  // children을 제외한 나머지 필드 가져오기
             result.push(rest);  // 나머지 필드를 배열에 추가
             node.children.sort((a, b) => a[sortField] - b[sortField]).forEach(child => traverse(child));
         };
@@ -476,7 +462,8 @@ var shnea = (() => ({
      * @param includeAverage
      * @returns {*[]}
      */
-    , arrayToStats : (array, headerField = 'date', categoryField = 'category', valueField = 'value', includeTotal = false, includeAverage = false) => {
+    ,
+    arrayToStats: (array, headerField = 'date', categoryField = 'category', valueField = 'value', includeTotal = false, includeAverage = false) => {
         const stats = {};
         const allCategories = Array.from(new Set(array.map(item => item[categoryField])));
 
@@ -507,9 +494,9 @@ var shnea = (() => ({
         }));
 
         // 토탈 및 평균 값 계산
-        if (includeTotal  || includeAverage) {
-            const total = { [headerField]: '합계' };
-            const average = { [headerField]: '평균' };
+        if (includeTotal || includeAverage) {
+            const total = {[headerField]: '합계'};
+            const average = {[headerField]: '평균'};
             allCategories.forEach(category => {
                 const totalValue = array
                     .filter(item => item[categoryField] === category)
@@ -530,7 +517,7 @@ var shnea = (() => ({
      * @param length
      * @returns {boolean}
      */
-    checkLength: (password , length) => {
+    checkLength: (password, length) => {
         return password.length >= length;
     },
 
@@ -611,154 +598,176 @@ var shnea = (() => ({
 
         return result;
     },
+    /**
+     * 배열을 여러 키의 값으로 정렬하는 함수
+     * @param array
+     * @param keys
+     * @returns {*[]}
+     */
     multiSortByKeys: (array, keys) => {
-        if (!Array.isArray(array)) {
-            throw new Error('첫 번째 인자는 배열이어야 합니다.');
-        }
-        if (!keys || (typeof keys !== 'string' && !Array.isArray(keys))) {
-            throw new Error('두 번째 인자는 문자열 또는 배열이어야 합니다.');
+        if (!Array.isArray(array) || (!Array.isArray(keys) && typeof keys !== 'object' && typeof keys !== 'string')) {
+            throw new Error('Invalid input');
         }
 
-        // 키를 배열 형태로 정리
+        // 단일 문자열 또는 객체를 배열로 변환
         if (typeof keys === 'string') {
-            keys = [{ key: keys, order: 'asc' }];
+            keys = [{key: keys}];
         } else if (!Array.isArray(keys)) {
             keys = [keys];
         } else {
-            keys = keys.map((k) => (typeof k === 'string' ? { key: k, order: 'asc' } : k));
+            // keys 배열 내의 단일 문자열을 객체로 변환
+            keys = keys.map(key => typeof key === 'string' ? {key: key} : key);
         }
 
-        // 정렬 함수
-        return [...array].sort((a, b) => {
-            for (const { key, order = 'asc' } of keys) {
-                if (a[key] > b[key]) return order === 'asc' ? 1 : -1;
-                if (a[key] < b[key]) return order === 'asc' ? -1 : 1;
+        return array.sort((a, b) => {
+            for (let {key, order = 'asc'} of keys) {
+                if (a[key] < b[key]) {
+                    return order === 'desc' ? 1 : -1;
+                }
+                if (a[key] > b[key]) {
+                    return order === 'desc' ? -1 : 1;
+                }
             }
             return 0;
         });
     },
-      // 30. 날짜의 차이 구하기
-      dateDifference : (date1, date2) => {
+    /**
+     * 날짜의 차이 구하기
+     * @param date1
+     * @param date2
+     * @returns {number}
+     */
+    dateDifference: (date1, date2) => {
         const d1 = new Date(date1);
         const d2 = new Date(date2);
-        // 시간을 00:00:00으로 설정
-        d1.setHours(0, 0, 0, 0);
-        d2.setHours(0, 0, 0, 0);
-        const diffTime = Math.abs(d1 - d2);
+        const diffTime = Math.abs(d2 - d1);
         return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      },
+    },
 
-      // 31. 특정 날짜가 속한 달의 마지막 날 반환
-      getLastDayOfMonth : (date) =>  {
+    /**
+     * 특정 날짜가 속한 달의 마지막 날
+     * @param date
+     * @returns {Date}
+     */
+    getLastDayOfMonth: (date) => {
         const d = new Date(date);
         return new Date(d.getFullYear(), d.getMonth() + 1, 0);
-      },
+    },
 
-      // 32. 날짜가 몇째 주인지 반환
-      getWeekOfMonth : (date, type = 1) => {
+    /**
+     * 날짜가 몇째 주인지
+     * @param date
+     * @param type
+     * @returns {number}
+     */
+    getWeekOfMonth: (date, type = 1) => {
         const d = new Date(date);
-        const firstDay = new Date(d.getFullYear(), d.getMonth(), 1);
-        const dayOffset = firstDay.getDay();
-        const weekOfMonth = Math.ceil((d.getDate() + dayOffset) / 7);
-
-        if (type === 2) {
-          const startOfYear = new Date(d.getFullYear(), 0, 1);
-          const dayOfYear = Math.floor((d - startOfYear) / (1000 * 60 * 60 * 24));
-          return Math.ceil((dayOfYear + startOfYear.getDay() + 1) / 7);
+        const firstDay = new Date(d.getFullYear(), d.getMonth(), 1).getDay();
+        const adjustedDate = d.getDate() + firstDay - 1;
+        if (type === 1) {
+            return Math.ceil(adjustedDate / 7);
+        } else if (type === 2) {
+            const startOfYear = new Date(d.getFullYear(), 0, 1);
+            const pastDaysOfYear = (d - startOfYear) / (1000 * 60 * 60 * 24);
+            return Math.ceil((pastDaysOfYear + startOfYear.getDay() + 1) / 7);
         }
+    },
 
-        return weekOfMonth;
-      },
+    /**
+     * 특정 날짜가 무슨 요일인지
+     * @param date
+     * @returns {string}
+     */
+    getDayOfWeek: (date) => {
+        const days = ['일', '월', '화', '수', '목', '금', '토'];
+        const d = new Date(date);
+        return days[d.getDay()];
+    },
 
-      // 33. 특정 날짜의 요일 반환
-      getDayOfWeek : (date , type = null) => {
-        var days = [];
-        if(type == 'ko'){
-            days = ['일', '월', '화', '수', '목', '금', '토'];
-        }else if (type == 'en'){
-            days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-        }else{
-            days = [0, 1, 2, 3, 4, 5, 6];
-        }
-
-        return days[new Date(date).getDay()];
-      },
-
-      // 34. 특정 날짜로부터 X일 더한 날짜 반환
-      addDays(date, days) {
+    /**
+     *  특정 날짜로부터 X일 더해지면 몇 월 며칠인지
+     * @param date
+     * @param days
+     * @returns {Date}
+     */
+    addDays: (date, days) => {
         const d = new Date(date);
         d.setDate(d.getDate() + days);
         return d;
-      },
+    },
 
-      // 35. 주말 조정 날짜 반환
-      getAdjustedWeekendDate : (date, type = 1) => {
-          const d = new Date(date);
-          const day = d.getDay();
 
-          // 토요일(6)일 경우
-          if (day === 6) {
-            return type === 1 ? d.addDays(- 1) : d.addDays(+ 2);
-          }
+    /**
+     * 특정 날짜가 주말이면 금요일 또는 다음 주 월요일의 날짜
+     * @param date
+     * @param type
+     * @returns {Date}
+     */
+    getAdjustedWeekendDate: (date, type = 1) => {
+        const d = new Date(date);
+        const day = d.getDay();
+        if (day === 0) { // Sunday
+            d.setDate(d.getDate() + (type === 1 ? -2 : 1)); // Friday or next Monday
+        } else if (day === 6) { // Saturday
+            d.setDate(d.getDate() + (type === 1 ? -1 : 2)); // Friday or next Monday
+        }
+        return d;
+    },
 
-          // 일요일(0)일 경우
-          if (day === 0) {
-            return type === 1 ? d.addDays(- 2) : d.addDays(+ 1);
-          }
-
-          // 주말이 아닌 평일은 그대로 반환
-          return d;
-      },
-
-      // 36. 두 날짜 사이의 모든 날짜 반환
-      getDatesBetween : (startDate, endDate) => {
-        const start = new Date(startDate);
-        const end = new Date(endDate);
+    /**
+     * 날짜와 날짜 사이의 날짜 모두 반환
+     * @param startDate
+     * @param endDate
+     * @returns {*[]}
+     */
+    getDatesBetween: (startDate, endDate) => {
         const dates = [];
+        const currentDate = new Date(startDate);
+        const end = new Date(endDate);
 
-        while (start <= end) {
-          dates.push(new Date(start));
-          start.setDate(start.getDate() + 1);
+        while (currentDate <= end) {
+            dates.push(new Date(currentDate));
+            currentDate.setDate(currentDate.getDate() + 1);
         }
 
         return dates;
-      },
+    },
 
-      // 37. 조건에 맞는 객체 조회
-       /**
-         * 배열에서 여러개의 특정 키 벨류로 객체,배역,index 찾기
-         * ex ) Utils.queryObjectsByConditions((GLOBAL.bascVlu.list, {{id : '42' , useYn : 'Y'}, 'find')
-         * ex ) Utils.queryObjectsByConditions((GLOBAL.bascVlu.list, {id : '42' , useYn : 'Y'}, 'filter')
-         * ex ) Utils.queryObjectsByConditions((GLOBAL.bascVlu.list, {id : '42' , useYn : 'Y'}, 'index')
-         * @param arr
-         * @param conditionsㅉ
-         * @param mode  default find
-         * @returns {*|*[]}
-         */
-        queryObjectsByConditions : (arr, conditions, mode = 'find') => {
-            // 조건을 검사하는 함수
-            const conditionChecker = (element) =>
-                Object.keys(conditions).every(key => element[key] === conditions[key]);
+    // 37. 조건에 맞는 객체 조회
+    /**
+     * 배열에서 여러개의 특정 키 벨류로 객체,배역,index 찾기
+     * ex ) Utils.queryObjectsByConditions((GLOBAL.bascVlu.list, {{id : '42' , useYn : 'Y'}, 'find')
+     * ex ) Utils.queryObjectsByConditions((GLOBAL.bascVlu.list, {id : '42' , useYn : 'Y'}, 'filter')
+     * ex ) Utils.queryObjectsByConditions((GLOBAL.bascVlu.list, {id : '42' , useYn : 'Y'}, 'index')
+     * @param arr
+     * @param conditionsㅉ
+     * @param mode  default find
+     * @returns {*|*[]}
+     */
+    queryObjectsByConditions: (arr, conditions, mode = 'find') => {
+        // 조건을 검사하는 함수
+        const conditionChecker = (element) =>
+            Object.keys(conditions).every(key => element[key] === conditions[key]);
 
-            // 입력 모드에 따라 다른 동작 수행
-            switch (mode) {
-                case 'find':
-                    // 첫 번째로 조건을 만족하는 객체를 반환
-                    return arr.find(conditionChecker);
+        // 입력 모드에 따라 다른 동작 수행
+        switch (mode) {
+            case 'find':
+                // 첫 번째로 조건을 만족하는 객체를 반환
+                return arr.find(conditionChecker);
 
-                case 'filter':
-                    // 조건을 만족하는 모든 객체를 배열로 반환
-                    return arr.filter(conditionChecker);
+            case 'filter':
+                // 조건을 만족하는 모든 객체를 배열로 반환
+                return arr.filter(conditionChecker);
 
-                case 'index':
-                    // 조건을 만족하는 객체들의 인덱스를 배열로 반환
-                    return arr.map((element, index) => conditionChecker(element) ? index : -1)
-                        .filter(index => index !== -1);
+            case 'index':
+                // 조건을 만족하는 객체들의 인덱스를 배열로 반환
+                return arr.map((element, index) => conditionChecker(element) ? index : -1)
+                    .filter(index => index !== -1);
 
-                default:
-                    return []
-            }
-        },
+            default:
+                return []
+        }
+    },
     /**
      *
      * 38. 그룹화된 데이터에 대해 동적 키로 카운트 및 다양한 통계 계산을 수행하는 함수
@@ -774,7 +783,7 @@ var shnea = (() => ({
      *
      * const result = shnea.calculateByDynamicKey(list, groupBy, keyToCount, operations);
      */
-    calculateByDynamicKey :  (data, groupBy, keyToCount, operations = []) =>{
+    calculateByDynamicKey: (data, groupBy, keyToCount, operations = []) => {
         // 그룹화 처리
         const groupedData = data.reduce((groups, item) => {
             // 그룹 키 생성 (groupBy 필드값을 결합하여 고유 키 생성)
@@ -792,7 +801,7 @@ var shnea = (() => ({
                 };
 
                 // 통계 초기화
-                operations.forEach(({ field, type }) => {
+                operations.forEach(({field, type}) => {
                     if (type === 'sum' || type === 'avg') {
                         groups[groupKey][`sum_${field}`] = 0; // 합계 초기화
                     }
@@ -815,7 +824,7 @@ var shnea = (() => ({
             groups[groupKey][keyValue] += 1; // 카운트 증가
 
             // 통계 연산 수행
-            operations.forEach(({ field, type }) => {
+            operations.forEach(({field, type}) => {
                 const value = parseFloat(item[field]) || 0; // 숫자 값으로 변환
 
                 if (type === 'sum' || type === 'avg') {
@@ -837,7 +846,7 @@ var shnea = (() => ({
 
         // 평균 계산 (평균은 총 합계를 항목 수로 나누어 계산)
         Object.values(groupedData).forEach(group => {
-            operations.forEach(({ field, type }) => {
+            operations.forEach(({field, type}) => {
                 if (type === 'avg') {
                     group[`avg_${field}`] =
                         group.count > 0 ? group[`sum_${field}`] / group.count : 0;
@@ -861,19 +870,19 @@ var shnea = (() => ({
      *           - alias: 결과 필드 이름 (선택)
      * @returns {Array} - 조인된 데이터와 통계 결과를 포함한 배열
      */
-    queryData : (data1, data2, joinKey, options = {}) => {
-        const { groupBy, aggregations } = options;
+    queryData: (data1, data2, joinKey, options = {}) => {
+        const {groupBy, aggregations} = options;
 
         // 1. Join - data1 기준으로 data2 데이터를 연결
         const joinedData = data1.map(item1 => {
             const relatedItems = data2.filter(item2 => item2[joinKey] === item1[joinKey]);
-            const details = relatedItems.map(item2 => ({ ...item1, ...item2 }));
-            return { ...item1, details };
+            const details = relatedItems.map(item2 => ({...item1, ...item2}));
+            return {...item1, details};
         });
 
         // 2. 통계 연산 추가
         joinedData.forEach(entry => {
-            const { details } = entry;
+            const {details} = entry;
 
             // Grouping 처리
             const groupedData = groupBy
@@ -883,13 +892,13 @@ var shnea = (() => ({
                     groups[groupKey].push(item);
                     return groups;
                 }, {})
-                : { all: details };
+                : {all: details};
 
             // Aggregations
             const groupStats = Object.entries(groupedData).map(([groupKey, items]) => {
-                const aggregated = { groupKey };
+                const aggregated = {groupKey};
 
-                aggregations.forEach(({ type, field, alias }) => {
+                aggregations.forEach(({type, field, alias}) => {
                     const values = items.map(item => parseFloat(item[field]) || 0);
 
                     if (type === 'sum') {
@@ -914,9 +923,9 @@ var shnea = (() => ({
 
         return joinedData;
     }
-
-
 }))();
+
+
 
 
 /**
@@ -1062,5 +1071,3 @@ Date.prototype.getAdjustedWeekendDate = function(type = 1) {
 Date.prototype.getDatesBetween = function(endDate) {
     return shnea.getDatesBetween(this, endDate);
 }
-
-
