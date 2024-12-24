@@ -32,7 +32,7 @@ const shnea = (() => ({
      * @returns {boolean}
      */
     ,
-    istrakeCase: (str) => {
+    isSnakeCase: (str) => {
         return /^[a-z]+(_[a-z]+)*$/.test(str);
     }
 
@@ -768,6 +768,7 @@ const shnea = (() => ({
                 return []
         }
     },
+
     /**
      *
      * 38. 그룹화된 데이터에 대해 동적 키로 카운트 및 다양한 통계 계산을 수행하는 함수
@@ -1070,4 +1071,15 @@ Date.prototype.getAdjustedWeekendDate = function(type = 1) {
 }
 Date.prototype.getDatesBetween = function(endDate) {
     return shnea.getDatesBetween(this, endDate);
+}
+
+String.prototype.isCamelCase = function() {
+    return shnea.isCamelCase(this);
+}
+String.prototype.isSnakeCase = function() {
+    return shnea.isSnakeCase(this);
+}
+
+String.prototype.maskSSN = function() {
+    return shnea.maskSSN(this);
 }
