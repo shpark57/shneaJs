@@ -678,9 +678,17 @@ const shnea = (() => ({
      * @param date
      * @returns {string}
      */
-    getDayOfWeek: (date) => {
-        const days = ['일', '월', '화', '수', '목', '금', '토'];
-        const d = new Date(date);
+    getDayOfWeek: (date , type = null) => {
+        var days = [];
+        if(type == 'ko'){
+            days = ['일', '월', '화', '수', '목', '금', '토'];
+        }else if (type == 'en'){
+            days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        }else{
+            days = [0, 1, 2, 3, 4, 5, 6];
+        }
+
+        const d = new Date(shnea.parseDate(date , 'yyyy-MM-dd'));
         return days[d.getDay()];
     },
 
@@ -1062,6 +1070,10 @@ Date.prototype.getWeekOfMonth = function(type = 1) {
 }
 Date.prototype.getDayOfWeek = function(type = null) {
     return shnea.getDayOfWeek(this , type);
+}
+String.prototype.getDayOfWeek = function(type = null) {
+
+    return shnea.getDayOfWeek(this, type);
 }
 Date.prototype.addDays = function(days) {
     return shnea.addDays(this, days);
