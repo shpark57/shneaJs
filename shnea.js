@@ -931,7 +931,43 @@ const shnea = (() => ({
         });
 
         return joinedData;
-    }
+    },
+
+    /**
+     * 40. 타입 체크를 위한 유틸리티 함수
+     *
+     * 특정 값이 지정된 타입(`undefined`, `boolean`, `string`, `ssn`, `email`, `phone` 등)과 일치하는지 확인합니다.
+     *
+     * @param {*} value - 검사할 값
+     * @param {string} type - 검사할 타입 (기본 JavaScript 타입 또는 사용자 정의 타입: 'ssn', 'email', 'phone' , 'number')
+     * @returns {boolean} - 타입이 일치하면 `true`, 그렇지 않으면 `false`
+     */
+    isTypeCheck : ( value, type ) => {
+        const checkType = ['undefined' , 'boolean', 'number' , 'bigint' , 'string' , 'symbol' , 'object' , 'function']
+
+        if(value !== null && checkType.includes(type)){
+            return typeof value === type;
+        }else{
+            if(type == 'num'){
+                //number의 경우는 typeof에서 체크할 수있으나, 문자형태의 숫자에는 체크가 안되기때문에 추가로 정규식을 사용하여 체크
+                return /^\d+$/.test(value)
+            }
+            else if(type == 'ssn'){
+                return shnea.isValidSSN(value)
+            }else if(type == 'email'){
+                return shnea.isValidEmail(value)
+            }else if(type == 'phone'){
+                var phoneNumber = shnea.formatPhoneNumber(value)
+                return shnea.isValidPhoneNumber(phoneNumber);
+            }else if (type == 'null' && value === null){
+                return true;
+            }else{
+                return false;
+            }
+        }
+
+
+    },
 }))();
 
 

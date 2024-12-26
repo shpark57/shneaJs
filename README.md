@@ -176,6 +176,9 @@ jquery 사용 시 아래 스크립트와 css 추가 필수 <br/>
             - shnea.calculateByDynamicKey(array,  ['DEPTNAME', 'DEPTNO'] , 'USERTYPE', [{ field: 'value', type: 'sum' },{ field: 'value', type: 'avg' },{ field: 'value', type: 'max' },{ field: 'value', type: 'min' }]);
         39.  데이터를 조인하고 그룹화 및 통계를 계산하는 함수  데이터 순서 중요
             - shnea.queryData(data1 ,data2 , '기준키' , { groupBy: [ 'KEY1' , 'KEY2' ],  aggregations: [{ type: 'count', field: 'KEY1', alias: 'count_key1' },{ type: 'sum', field: 'cnt', alias: 'total_cnt' },{ type: 'avg', field: 'cnt', alias: 'avg_cnt' }]})
+        40. 타입 체크를 위한 유틸리티 함수
+            - shnea.isTypeCheck(value , 'null')  , shnea.isTypeCheck(value , 'num') , shnea.isTypeCheck(value , 'string')  , shnea.isTypeCheck(value , 'object') 등
+            - 지원타입 : 'undefined' , 'boolean', 'number' , 'bigint' , 'string' , 'symbol' , 'object' , 'function' , 'ssn' , 'email' , 'phone' , 'null'
 
 ## shneaJq.js
     1. 그리드의 열 병합
