@@ -15,9 +15,11 @@ jquery-ui.js
 -->
 
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
 <script src="https://cdn.jsdelivr.net/gh/shpark57/shneaJs@main/shnea.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/shpark57/shneaJs@main/shneaJq.js"></script>
 
@@ -56,7 +58,7 @@ jquery-ui.js
             $("#file1Txt").text("파일 명 : " + $("#file")[0].files[0].name +  "\n파일 용량 : " + $("#file")[0].files[0].size )
             $("#file2Txt").text("리사이징 진행" )
             var file = $("#file")[0].files[0]
-            var MAX_SIZE = 1 * 1024 * 1024  // 1M
+            var MAX_SIZE = 50 * 1024; // 50 KB
             if(file.size > MAX_SIZE){
                 file_resize = await shnea.getCompressImage(file , MAX_SIZE , file.name)
             }else{
@@ -76,6 +78,10 @@ jquery-ui.js
             $("#txt").text("파일 명: " + file.name + "\n파일 용량: " + file.size);
         });
 
+
+
+        /** 이미지 다운로드 */
+
         $('#downloadButton').on('click', function () {
             if (!file_resize) {
                 alert("다운로드할 파일이 없습니다.");
@@ -91,18 +97,326 @@ jquery-ui.js
 
             URL.revokeObjectURL(url); // 메모리 해제
         });
+
     });
+
+
+
+    var toCamelCaseExec = () => {
+        var str = $("#toCamelCase").val();
+        var result = shnea.toCamelCase(str);
+        $("#toCamelCaseResult").val(result);
+    }
+
+
+    var toSnakeCaseExec = () => {
+        var str = $("#toSnakeCase").val();
+        var result = shnea.toSnakeCase(str);
+        $("#toSnakeCaseResult").val(result);
+    }
+
+    var isCamelCaseExec = () => {
+        var str = $("#isCamelCase").val();
+        var result = shnea.isCamelCase(str);
+        $("#isCamelCaseResult").val(result);
+    }
+    var isSnakeCaseExec = () => {
+        var str = $("#isSnakeCase").val();
+        var result = shnea.isSnakeCase(str);
+        $("#isSnakeCaseResult").val(result);
+    }
+
+    var isValidSSNExec = () => {
+        var str = $("#isValidSSN").val();
+        var result = shnea.isValidSSN(str);
+        $("#isValidSSNResult").val(result);
+    }
+
+    var maskSSNExec = () => {
+        var str = $("#maskSSN").val();
+        var result = shnea.maskSSN(str);
+        $("#maskSSNResult").val(result);
+    }
+
+    var findIndexByKeyValueExec = () => {
+        var str = $("#findIndexByKeyValue").val();
+        var result = shnea.findIndexByKeyValue(JSON.parse(str), $("#findIndexByKeyValueSelectKey").val() , $("#findIndexByKeyValueSelectValue").val());
+        $("#findIndexByKeyValueResult").val(result);
+    }
+
+    var findIndexByKeyExec = () => {
+        var str = $("#findIndexByKey").val();
+        var result = shnea.findIndexByKey(JSON.parse(str), $("#findIndexByKeySelectKey").val() );
+        $("#findIndexByKeyResult").val(result);
+    }
+
+    var secToTimeExec = () => {
+        var str = $("#secToTime").val();
+        var result = shnea.secToTime(str);
+        $("#secToTimeResult").val(result);
+    }
+
+    var emojiToUnicodeExec = () => {
+        var str = $("#emojiToUnicode").val();
+        var result = shnea.emojiToUnicode(str);
+        $("#emojiToUnicodeResult").val(result);
+    }
+    var extractAndReplaceEmojisExec = () => {
+        var str = $("#extractAndReplaceEmojis").val();
+        var result = shnea.extractAndReplaceEmojis(str);
+        $("#extractAndReplaceEmojisResult").val(result);
+    }
+
+    var decodeUnicodeToEmojiExec = () => {
+        var str = $("#decodeUnicodeToEmoji").val();
+        var result = shnea.decodeUnicodeToEmoji(str);
+        $("#decodeUnicodeToEmojiResult").val(result);
+    }
+
+
+
+    var removeHtmlTagsExec = () => {
+        var str = $("#removeHtmlTags").val();
+        var result = shnea.removeHtmlTags(str);
+        $("#removeHtmlTagsResult").val(result);
+    }
+
+
+    var isEmptyExec = () => {
+        var str = $("#isEmpty").val();
+        var result = shnea.isEmpty(str);
+        $("#isEmptyResult").val(result);
+    }
+
+    var isValidPhoneNumberExec = () => {
+        var str = $("#isValidPhoneNumber").val();
+        var result = shnea.isValidPhoneNumber(str);
+        $("#isValidPhoneNumberResult").val(result);
+    }
+
+
+    var formatPhoneNumberExec = () => {
+        var str = $("#formatPhoneNumber").val();
+        var result = shnea.formatPhoneNumber(str);
+        $("#formatPhoneNumberResult").val(result);
+    }
+
+    var isValidEmailExec = () => {
+        var str = $("#isValidEmail").val();
+        var result = shnea.isValidEmail(str);
+        $("#isValidEmailResult").val(result);
+    }
+    var parseDateExec = () => {
+        var str = $("#parseDate").val();
+        var format = $("#parseDateFormat").val();
+        var result = shnea.parseDate(str, format);
+        $("#parseDateResult").val(result);
+    }
+
+    var arrayToTreeExec = () => {
+        var str = $("#arrayToTree").val();
+        var result = shnea.arrayToTree(JSON.parse(str));
+        $("#arrayToTreeResult").text(JSON.stringify(result));
+    }
+
+    var treeToArrayExec = () => {
+        var str = $("#treeToArray").val();
+        var result = shnea.treeToArray(JSON.parse(str));
+        $("#treeToArrayResult").text(JSON.stringify(result));
+    }
+
+    var arrayToStatsExec = () => {
+        var str = $("#arrayToStats").val();
+        var result = shnea.arrayToStats(JSON.parse(str) ,'date' , 'category' , 'value' , true , true);
+        $("#arrayToStatsResult").text(JSON.stringify(result));
+    }
+
+    var checkLengthExec = () => {
+        var str = $("#checkLength").val();
+        var max = $("#checkLengthMax").val();
+        var type = $("#checkLengthType").val();
+        var result = shnea.checkLength(str, max , type);
+        $("#checkLengthResult").val(result);
+    }
+
+    var checkUpperLowerCaseExec = () => {
+        var str = $("#checkUpperLowerCase").val();
+        var result = shnea.checkUpperLowerCase(str);
+        $("#checkUpperLowerCaseResult").val(result);
+    }
+
+    var checkSpecialCharExec = () => {
+        var str = $("#checkSpecialChar").val();
+        var result = shnea.checkSpecialChar(str);
+        $("#checkSpecialCharResult").val(result);
+    }
+    var checkRepeatedCharsExec = () => {
+        var str = $("#checkRepeatedChars").val();
+        var cnt = $("#checkRepeatedCharsCnt").val();
+        var result = shnea.checkRepeatedChars(str, cnt);
+        $("#checkRepeatedCharsResult").val(result);
+    }
+
+    var checkPasswordExec = () => {
+        var str = $("#checkPassword").val();
+        var level = $("#checkPasswordLevel").val();
+        var result = shnea.checkPassword(str, level);
+        $("#checkPasswordResult").text(JSON.stringify(result));
+    }
+
+    var multiSortByKeysExec = () => {
+        var str = $("#multiSortByKeys").val();
+        var keys = $("#multiSortByKeysKey").val();
+        var result = shnea.multiSortByKeys(JSON.parse(str), JSON.parse(keys));
+        $("#multiSortByKeysResult").text(JSON.stringify(result));
+    }
+
+    var getLastDayOfMonthExec = () => {
+        var str = $("#getLastDayOfMonth").val();
+        var result = shnea.getLastDayOfMonth(str);
+        $("#getLastDayOfMonthResult").val(result);
+    }
+
+    var dateDifferenceExec = () => {
+        var str1 = $("#dateDifference").val();
+        var str2 = $("#dateDifference2").val();
+        var result = shnea.dateDifference(str1, str2);
+        $("#dateDifferenceResult").val(result);
+    }
+
+    var getWeekOfMonthExec = () => {
+        var str = $("#getWeekOfMonth").val();
+        var type = $("#getWeekOfMonthType").val();
+        var result = shnea.getWeekOfMonth(str, type);
+        $("#getWeekOfMonthResult").val(result);
+    }
+    var getDayOfWeekExec = () => {
+        var str = $("#getDayOfWeek").val();
+        var type = $("#getDayOfWeekType").val();
+        var result = shnea.getDayOfWeek(str, type);
+        $("#getDayOfWeekResult").val(result);
+    }
+
+    var addDaysExec = () => {
+        var str = $("#addDays").val();
+        var days = $("#addDaysNum").val();
+        var result = shnea.addDays(str, days);
+        $("#addDaysResult").val(result);
+    }
+    var getAdjustedWeekendDateExec = () => {
+        var str = $("#getAdjustedWeekendDate").val();
+        var type = $("#getAdjustedWeekendDateType").val()
+        var result = shnea.getAdjustedWeekendDate(str,type);
+        $("#getAdjustedWeekendDateResult").val(result);
+    }
+
+    var queryObjectsByConditionsExec = () => {
+        var str = $("#queryObjectsByConditions").val();
+        var conditions = $("#queryObjectsByConditionsKey").val();
+        var result = shnea.queryObjectsByConditions(JSON.parse(str), JSON.parse(conditions) , 'find');
+        $("#queryObjectsByConditionsResult").text(JSON.stringify(result));
+    }
+
+    var calculateByDynamicKeyExec = () => {
+        var str = $("#calculateByDynamicKey").val();
+        var groupBy = $("#calculateByDynamicKeyGroupBy").val()
+        var keyToCount = $("#calculateByDynamicKeyKeyToCount").val()
+        var oper = $("#calculateByDynamicKeyOper").val();
+        var result = shnea.calculateByDynamicKey(JSON.parse(str) , JSON.parse(groupBy) , keyToCount , JSON.parse(oper));
+        $("#calculateByDynamicKeyResult").text(JSON.stringify(result));
+    }
+
+    var queryDataExec = () => {
+        var data = $("#queryData").val();
+        var data2 = $("#queryData2").val();
+        var joinKey = $("#queryDataJoinKey").val();
+        var options = $("#queryDataOptions").val();
+        var result = shnea.queryData(JSON.parse(data), JSON.parse(data2) , joinKey , JSON.parse(options));
+        $("#queryDataResult").text(JSON.stringify(result));
+    }
+
+    var isTypeCheckExec = () => {
+        var str = $("#isTypeCheck").val();
+        var type = $("#isTypeCheckType").val();
+        var result = shnea.isTypeCheck(str, type);
+        $("#isTypeCheckResult").val(result);
+    }
+
+    var encodeUnicodeExec = () => {
+        var str = $("#encodeUnicode").val();
+        var result = shnea.encodeUnicode(str,false);
+        $("#encodeUnicodeResult").val(result);
+    }
+
+
+    var decodeUnicodeExec = () => {
+        var str = $("#decodeUnicode").val();
+        var result = shnea.decodeUnicode(str);
+        $("#decodeUnicodeResult").val(result);
+    }
+
 </script>
 </body>
-    <button id="btn1">동적 모달 열기</button><br/>
 
 </br>
-</br>
-이미지 리사이징
-</br>
+1. toCamelCase(str) : 문자열을 카멜케이스로 변환<br/>
+<input type="text" id="toCamelCase" value="to-camel-case">  <input type="button" value="실행" onclick="toCamelCaseExec()"> <input type="text" id="toCamelCaseResult" placeholder="결과">
+<br/>
+2. toSnakeCase(str, separator = '_') : 문자열을 스네이크 케이스로 변환<br/>
+<input type="text" id="toSnakeCase" value="toSnakeCase">  <input type="button" value="실행" onclick="toSnakeCaseExec()"> <input type="text" id="toSnakeCaseResult" placeholder="결과">
+<br/>
+3. isCamelCase(str) : 문자열이 카멜케이스인지 확인<br/>
+<input type="text" id="isCamelCase" value="isCamelCase">  <input type="button" value="실행" onclick="isCamelCaseExec()"> <input type="text" id="isCamelCaseResult" placeholder="결과">
+<br/>
+4. isSnakeCase(str) : 문자열이 스네이크케이스인지 확인<br/>
+<input type="text" id="isSnakeCase" value="is_snake_case">  <input type="button" value="실행" onclick="isSnakeCaseExec()"> <input type="text" id="isSnakeCaseResult" placeholder="결과">
+<br/>
+5. isValidSSN(ssn) : 주민등록번호 유효성 검사<br/>
+<input type="text" id="isValidSSN" value="123456-1234567">  <input type="button" value="실행" onclick="isValidSSNExec()"> <input type="text" id="isValidSSNResult" placeholder="결과">
+<br/>
+6. maskSSN(ssn) : 주민등록번호 마스킹<br/>
+<input type="text" id="maskSSN" value="123456-1234567">  <input type="button" value="실행" onclick="maskSSNExec()"> <input type="text" id="maskSSNResult" placeholder="결과">
+<br/>
+7. findIndexByKeyValue(arr, key , value) : 배열에서 특정 키의 value 값으로 인덱스 찾기<br/>
+<input type="text" id="findIndexByKeyValue" value='[{"id":1,"name":"홍길동","유니크":"유니크"},{"id":2,"name":"김철수"},{"id":3,"name":"이영희"}]'>
+<input type="text" id="findIndexByKeyValueSelectKey" value="name">
+<input type="text" id="findIndexByKeyValueSelectValue" value="홍길동">
+<input type="button" value="실행" onclick="findIndexByKeyValueExec()"> <input type="text" id="findIndexByKeyValueResult" placeholder="결과">
+<br/><br/>
+8. findIndexByKey(arr, key ) : 배열에서 특정 키로 인덱스 찾기<br/>
+<input type="text" id="findIndexByKey" value='[{"id":1,"name":"홍길동","유니크":"유니크"},{"id":2,"name":"김철수"},{"id":3,"name":"이영희"}]'>
+<input type="text" id="findIndexByKeySelectKey" value="유니크">
+<input type="button" value="실행" onclick="findIndexByKeyExec()"> <input type="text" id="findIndexByKeyResult" placeholder="결과">
+<br/>
+9. secToTime(sec = 0) : 초를 시간:분:초 로 변환<br/>
+<input type="text" id="secToTime" value="365">  <input type="button" value="실행" onclick="secToTimeExec()"> <input type="text" id="secToTimeResult" placeholder="결과">
+<br/>
+10. emojiToUnicode(emoji) : 하나의 이모지를 유니코드로 변환<br/>
+<input type="text" id="emojiToUnicode" value="😀">  <input type="button" value="실행" onclick="emojiToUnicodeExec()"> <input type="text" id="emojiToUnicodeResult" placeholder="결과">
+<br/>
+11. extractAndReplaceEmojis(str) : 여러개의 이모지를 유니코드로 변환<br/>
+<input type="text" id="extractAndReplaceEmojis" value="😀, 😃, 😄, 😁, 😆, 😅, 😂, 🤣, 😊, 😇, 🙂, 🙃, 😉, 😌, 😍, 🥰">  <input type="button" value="실행" onclick="extractAndReplaceEmojisExec()"> <input type="text" id="extractAndReplaceEmojisResult" placeholder="결과">
+<br/>
+12. decodeUnicodeToEmoji(str) : 유니코드를 이모지로 변환<br/>
+<input type="text" id="decodeUnicodeToEmoji" value="&amp;#x1F600;, &amp;#x1F603;, &amp;#x1F604;">  <input type="button" value="실행" onclick="decodeUnicodeToEmojiExec()"> <input type="text" id="decodeUnicodeToEmojiResult" placeholder="결과">
+<br/>
+13. removeHtmlTags(str) : HTML 태그 제거<br/>
+<input type="text" id="removeHtmlTags" value="<div>안녕하세요</div>">  <input type="button" value="실행" onclick="removeHtmlTagsExec()"> <input type="text" id="removeHtmlTagsResult" placeholder="결과">
+<br/>
+14. isEmpty(value) : null 또는 빈 값 또는 초기값 체크<br/>
+<input type="text" id="isEmpty" value="null">  <input type="button" value="실행" onclick="isEmptyExec()"> <input type="text" id="isEmptyResult" placeholder="결과">
+<br/>
+15. isValidPhoneNumber(phoneNumber) : 전화번호 유효성 검사<br/>
+<input type="text" id="isValidPhoneNumber" value="010-1234-5678">  <input type="button" value="실행" onclick="isValidPhoneNumberExec()"> <input type="text" id="isValidPhoneNumberResult" placeholder="결과">
+<br/>
+16. formatPhoneNumber(phoneNumber) : 전화번호 포맷<br/>
+<input type="text" id="formatPhoneNumber" value="01012345678">  <input type="button" value="실행" onclick="formatPhoneNumberExec()"> <input type="text" id="formatPhoneNumberResult" placeholder="결과">
+<br/>
+17. isValidEmail(email) : 이메일 유효성 검사<br/>
+<input type="text" id="isValidEmail" value="test@example.com">  <input type="button" value="실행" onclick="isValidEmailExec()"> <input type="text" id="isValidEmailResult" placeholder="결과">
+<br/>
+18,19. compressImage(file , maxSizeInBytes , origin_nm , callback) , getCompressImage(file , maxSizeInBytes,origin_nm)  : 이미지를 max 사이즈보다 작게 조절 , 조절된 이미지를 편하게 불러오기 위한 함수<br/>
 <input type="file" id="file">
-
-
 <button id="downloadButton">다운로드</button>
 </br>
 원본 이미지 그대로 :
@@ -113,15 +427,246 @@ jquery-ui.js
 </br>
 <textarea id="file2Txt" style="width : 500px"></textarea>
 </html>
-
-
 <br/>
+20,21. urlImgToFile(imageUrl, origin_nm, callback) , getFileFromUrl(imageUrl, origin_nm)  URL 이미지를 파일로 변환 , 불러온 이미지를 편하게 불러오기위한 함수
 <br/>
 가져올 이미지 : https://images.unsplash.com/photo-1707149414369-5989e250c788
 <br/>
 <img src="https://images.unsplash.com/photo-1707149414369-5989e250c788" width = 300 ,height = 300>
 <br/>
-<input type="button" id="btn2" value="이미지 file 객체 가져오기"/>
+결과 <input type="button" id="btn2" value="이미지 file 객체 가져오기"/>
+<br/>
+<textarea id="txt" style="width : 500px; height: 50px"></textarea>
+
+<br/>
+22. parseDate(input, format = 'yyyy-MM-dd HH:mm:ss') : 입력된 날짜 값을 파싱하여 지정된 형식으로 변환 함수<br/>
+<input type="text" id="parseDate" value="2025-03-26 12:00:00">
+<input type="text" id="parseDateFormat" value="yyyy-MM-dd">
+<input type="button" value="실행" onclick="parseDateExec()">
+<input type="text" id="parseDateResult" placeholder="결과">
+<br/>
+23. arrayToTree(array, idField = 'id', parentField = 'upper_id', sortField = 'sort') : 배열을 트리구조로 변환<br/>
+<input type="text" id="arrayToTree" value='[{"id":1,"name":"부서1","upper_id":null},{"id":2,"name":"부서2","upper_id":1},{"id":3,"name":"부서3","upper_id":1},{"id":4,"name":"부서4","upper_id":2}]'>
+<input type="button" value="실행" onclick="arrayToTreeExec()">
+<br/>
+<textarea id="arrayToTreeResult" style="width : 500px; height: 50px"></textarea>
+<br/>
+24. treeToArray(tree, idField = 'id', parentField = 'upper_id', sortField = 'sort') : 트리구조를 배열로 변환<br/>
+<input type="text" id="treeToArray" value='[{"id":1,"name":"부서1","upper_id":null,"children":[{"id":2,"name":"부서2","upper_id":1,"children":[{"id":4,"name":"부서4","upper_id":2,"children":[]}]},{"id":3,"name":"부서3","upper_id":1,"children":[]}]}]'>
+<input type="button" value="실행" onclick="treeToArrayExec()">
+<br/>
+<textarea id="treeToArrayResult" style="width : 500px; height: 50px"></textarea>
+<br/>
+25.arrayToStats(array, headerField = 'date', categoryField = 'category', valueField = 'value', includeTotal = false, includeAverage = false) : 배열을 통계로 변환<br/>
+<input type="text" id="arrayToStats" value='[{"date":"2024-01-01","category":"A","value":10},{"date":"2024-01-01","category":"B","value":20},{"date":"2024-01-01","category":"A","value":5},{"date":"2024-01-02","category":"A","value":15},{"date":"2024-01-02","category":"B","value":25},{"date":"2024-01-03","category":"B","value":30}]'>
+<br/>
+<input type="button" value="실행" onclick="arrayToStatsExec()">
+<br/>
+<textarea id="arrayToStatsResult" style="width : 500px; height: 50px"></textarea>
+<br/>
+26. checkLength(value, length , type = 'up') : 문자열 길이 체크<br/>
+<input type="text" id="checkLength" value="12345">
+<input type="text" id="checkLengthMax" value="10">
+<select id="checkLengthType">
+    <option value="up" selected>up (해당 길이 이상이면 true)</option>
+    <option value="down">down (해당 길이 이하면 true)</option>
+    <option value="eq">eq (해당 길이 와 같으면 true)</option>
+</select>
+<input type="button" value="실행" onclick="checkLengthExec()"> <input type="text" id="checkLengthResult" placeholder="결과">
+<br/>
+27. checkUpperLowerCase(value) : 대소문자 포함 여부<br/>
+<input type="text" id="checkUpperLowerCase" value="Aa1234">
+<input type="button" value="실행" onclick="checkUpperLowerCaseExec()"> <input type="text" id="checkUpperLowerCaseResult" placeholder="결과">
 <br/>
 
-<textarea id="txt" style="width : 500px; height: 100px"></textarea>
+28. checkSpecialChar(value) : 특수문자 포함 여부 <br/>
+<input type="text" id="checkSpecialChar" value="Aa1234!@#">
+<input type="button" value="실행" onclick="checkSpecialCharExec()"> <input type="text" id="checkSpecialCharResult" placeholder="결과">
+<br/>
+
+29.checkRepeatedChars(value , cnt = 3) : 반복 문자 및 문자열 검사 ( 동일 문자 n번 연속이면 false return )<br/>
+<input type="text" id="checkRepeatedChars" value="Aa1234Aa1234">
+<input type="text" id="checkRepeatedCharsCnt" value="3">
+<input type="button" value="실행" onclick="checkRepeatedCharsExec()"> <input type="text" id="checkRepeatedCharsResult" placeholder="결과">
+<br/>
+30. checkPassword(password, level = 4) : 비밀번호 체크 함수<br/>
+<input type="text" id="checkPassword" value="password123">
+<select id="checkPasswordLevel">
+    <option value="1" >1(8자 이상)</option>
+    <option value="2" >2(8자이상,대소문자 포함)</option>
+    <option value="3" >3(8자이상,대소문자 포함,반복 문자 금지)</option>
+    <option value="4" selected>4( 8자 이상, 대소문자 포함, 특수문자 포함 (default))</option>
+    <option value="5" >5(8자 이상, 대소문자 포함, 특수문자 포함, 반복 문자 금지)</option>
+</select>
+<input type="button" value="실행" onclick="checkPasswordExec()"><br/>
+<textarea id="checkPasswordResult" style="width : 500px; height: 50px"></textarea>
+<br/>
+31. multiSortByKeys(array, key) : 배열을 여러 키의 값으로 정렬하는 함수<br/>
+<input type="text" id="multiSortByKeys" value='[ { "name": "John", "age": 30, "height": 175 },{ "name": "Jane", "age": 25, "height": 160 },{ "name": "Smith", "age": 30, "height": 180 },{ "name": "Doe", "age": 25, "height": 165 }]'>
+<input type="text" id="multiSortByKeysKey" value='[{"key" : "age" , "order" : "asc"}, {"key" : "height", "order" : "desc"}]'>
+<input type="button" value="실행" onclick="multiSortByKeysExec()">
+<br/>
+<textarea id="multiSortByKeysResult" style="width : 500px; height: 100px"></textarea>
+<br/>
+32. dateDifference(date1, date2) : 날짜의 차이 구하기<br/>
+<input type="text" id="dateDifference" value="2025-03-26">
+<input type="text" id="dateDifference2" value="2025-08-28">
+<input type="button" value="실행" onclick="dateDifferenceExec()">
+<input type="text" id="dateDifferenceResult" placeholder="결과"><br/>
+
+33. getLastDayOfMonth(date) : 특정 날짜가 속한 달의 마지막날 구하기<br/>
+<input type="text" id="getLastDayOfMonth" value="2025-03-26">
+<input type="button" value="실행" onclick="getLastDayOfMonthExec()">
+<input type="text" id="getLastDayOfMonthResult" placeholder="결과"><br/>
+
+34. getWeekOfMonth(date, type = 1) : 날짜가 몇째 주인지 구하기 <br/>
+<input type="text" id="getWeekOfMonth" value="2025-03-26">
+<select id="getWeekOfMonthType">
+    <option value="1" selected>1(해당 월의 주)</option>
+    <option value="2" >2(해당 년도의 주)</option>
+</select>
+<input type="button" value="실행" onclick="getWeekOfMonthExec()">
+<input type="text" id="getWeekOfMonthResult" placeholder="결과"><br/>
+
+35. getDayOfWeek(date , type = null) : 특정 날짜의 요일 구하기<br/>
+<input type="text" id="getDayOfWeek" value="2025-03-26">
+<select id="getDayOfWeekType">
+    <option value="" selected>default</option>
+    <option value="ko">ko</option>
+    <option value="en">en</option>
+</select>
+<input type="button" value="실행" onclick="getDayOfWeekExec()">
+<input type="text" id="getDayOfWeekResult" placeholder="결과"><br/>
+
+36. addDays(date, days) : 특정 날짜로부터 X일 후 날짜 구하기<br/>
+<input type="text" id="addDays" value="2025-03-26">
+<input type="text" id="addDaysNum" value="10">
+<input type="button" value="실행" onclick="addDaysExec()">
+<input type="text" id="addDaysResult" placeholder="결과"><br/>
+
+37. getAdjustedWeekendDate(date, type = 1) : 주말 조정 날짜 구하기<br/>
+<input type="text" id="getAdjustedWeekendDate" value="2025-05-24">
+<select id="getAdjustedWeekendDateType">
+    <option value="1" selected>1(금주 금요일 날짜 반환)</option>
+    <option value="2" >2(차주 월요일 날짜 반환)</option>
+</select>
+<input type="button" value="실행" onclick="getAdjustedWeekendDateExec()">
+<input type="text" id="getAdjustedWeekendDateResult" placeholder="결과"><br/>
+
+38. queryObjectsByConditions(startDate, endDate) : 조건에 맞는 객체 조회<br/>
+<input type="text" id="queryObjectsByConditions" value='[{"id":1,"name":"홍길동","age":30},{"id":2,"name":"김철수","age":25},{"id":3,"name":"이영희","age":35}]'>
+<input type="text" id="queryObjectsByConditionsKey" value='{"name":"홍길동"}'>
+<input type="button" value="실행" onclick="queryObjectsByConditionsExec()">
+<br/>
+<textarea id="queryObjectsByConditionsResult" style="width : 500px; height: 100px"></textarea>
+
+<br/>
+
+39. calculateByDynamicKey(arr, conditions, mode = 'find') :<br/>
+<input type="text" id="calculateByDynamicKey" value='[
+  {"DEPTNAME":"개발팀","DEPTNO":"D001","USERTYPE":"정규직","value":100},
+  {"DEPTNAME":"개발팀","DEPTNO":"D001","USERTYPE":"계약직","value":50},
+  {"DEPTNAME":"개발팀","DEPTNO":"D001","USERTYPE":"정규직","value":70},
+  {"DEPTNAME":"영업팀","DEPTNO":"D002","USERTYPE":"정규직","value":120},
+  {"DEPTNAME":"영업팀","DEPTNO":"D002","USERTYPE":"계약직","value":30},
+  {"DEPTNAME":"인사팀","DEPTNO":"D003","USERTYPE":"정규직","value":90},
+  {"DEPTNAME":"인사팀","DEPTNO":"D003","USERTYPE":"계약직","value":40},
+  {"DEPTNAME":"인사팀","DEPTNO":"D003","USERTYPE":"계약직","value":60},
+  {"DEPTNAME":"개발팀","DEPTNO":"D001","USERTYPE":"인턴","value":20},
+  {"DEPTNAME":"영업팀","DEPTNO":"D002","USERTYPE":"인턴","value":15}
+]'>
+<input type="text" id="calculateByDynamicKeyGroupBy" value='["DEPTNAME", "DEPTNO"]'>
+<input type="text" id="calculateByDynamicKeyKeyToCount" value='USERTYPE'>
+<input type="text" id="calculateByDynamicKeyOper" value='[
+{ "field": "value", "type": "sum" },
+{ "field": "value", "type": "avg" },
+{ "field": "value", "type": "max" },
+{ "field": "value", "type": "min" }
+]'>
+
+<input type="button" value="실행" onclick="calculateByDynamicKeyExec()">
+<br/>
+<textarea id="calculateByDynamicKeyResult" style="width : 500px; height: 100px"></textarea>
+<br/>
+
+40. queryData(data1, data2, joinKey, options = {}) : 데이터를 조인하고 그룹화 및 통계 계산 하는 함수<br/>
+<input type="text" id="queryData" value='[
+  {"id":1,"name":"홍길동","age":30},
+  {"id":2,"name":"김철수","age":25},
+  {"id":3,"name":"이영희","age":35},
+  {"id":4,"name":"박민수","age":28},
+  {"id":5,"name":"최지은","age":32},
+  {"id":6,"name":"오세훈","age":40},
+  {"id":7,"name":"한지민","age":27},
+  {"id":8,"name":"김하늘","age":29},
+  {"id":9,"name":"이준호","age":31},
+  {"id":10,"name":"정유진","age":26}
+]'>
+<input type="text" id="queryData2" value='[
+  {"id":1,"dept":"개발팀","sales":100},
+  {"id":2,"dept":"영업팀","sales":150},
+  {"id":3,"dept":"인사팀","sales":120},
+  {"id":4,"dept":"기획팀","sales":130},
+  {"id":5,"dept":"디자인팀","sales":110},
+  {"id":6,"dept":"개발팀","sales":140},
+  {"id":7,"dept":"영업팀","sales":160},
+  {"id":8,"dept":"인사팀","sales":115},
+  {"id":9,"dept":"기획팀","sales":125},
+  {"id":10,"dept":"디자인팀","sales":135}
+]'>
+<input type="text" id="queryDataJoinKey" value='id'>
+<input type="text" id="queryDataOptions" value='{
+  "groupBy": ["dept"],
+  "aggregations": [
+    {"type": "sum", "field": "sales", "alias": "totalSales"},
+    {"type": "avg", "field": "sales", "alias": "avgSales"},
+    {"type": "max", "field": "sales", "alias": "maxSales"},
+    {"type": "min", "field": "sales", "alias": "minSales"},
+    {"type": "count", "field": "sales", "alias": "salesCount"}
+  ]
+}'>
+<input type="button" value="실행" onclick="queryDataExec()">
+<br/>
+<textarea id="queryDataResult" style="width : 500px; height: 100px"></textarea>
+<br/>
+
+41. isTypeCheck ( value, type ) : 타입 체크를 위한 유틸리티 함수(테스트값이 전부 문자열이기때문에 테스트에 지장있음.)<br/>
+<input type="text" id="isTypeCheck" value="123">
+<select id="isTypeCheckType">
+    <option value="undefined">undefined</option>
+    <option value="boolean">boolean</option>
+    <option value="number">number</option>
+    <option value="bigint">bigint</option>
+    <option value="string">string</option>
+    <option value="symbol">symbol</option>
+    <option value="object">object</option>
+    <option value="function">function</option>
+    <option value="num">num</option>>
+    <option value="ssn">ssn</option>
+    <option value="email">email</option>
+    <option value="phone">phone</option>
+    <option value="null">null</option>
+</select>
+<input type="button" value="실행" onclick="isTypeCheckExec()"> <input type="text" id="isTypeCheckResult" placeholder="결과">
+<br/>
+
+
+<br/>
+41. encodeUnicode (str, full = '') : 유니코드 인코딩<br/>
+<input type="text" id="encodeUnicode" value="A">  <input type="button" value="실행" onclick="encodeUnicodeExec()"> <input type="text" id="encodeUnicodeResult" placeholder="결과">
+<br/>
+42. decodeUnicode (str) : 유니코드 디코딩<br/>
+<input type="text" id="decodeUnicode" value="41">  <input type="button" value="실행" onclick="decodeUnicodeExec()"> <input type="text" id="decodeUnicodeResult" placeholder="결과">
+
+
+
+
+<br/>
+
+jquery
+<br/>
+
+1 .동적 모달 열기<br/>
+
+<button id="btn1">동적 모달 열기</button><br/>
+

@@ -89,7 +89,7 @@ const shnea = (() => ({
         if (!key) {
             return [];
         }
-        return arr.map((element, index) => element[key] === value ? index : -1).filter(index => index !== -1);
+        return arr.map((element, index) => element[key] == value ? index : -1).filter(index => index !== -1);
     }
 
     /**
@@ -157,13 +157,13 @@ const shnea = (() => ({
         return str.replace(/&#x([A-F0-9]+);/g, (match, hex) => {
             return String.fromCodePoint(parseInt(hex, 16));
         });
-    }
+    },
+
     /**
      * HTML 태그 제거
      * @param str
      * @returns {*}
      */
-    ,
     removeHtmlTags: (str) => {
         return str.replace(/<[^>]*>?/g, '');
     }
@@ -356,21 +356,29 @@ const shnea = (() => ({
         if (input instanceof Date) {
             date = input;
         } else if (typeof input === 'string' || typeof input === 'number') {
-            const str = input.toString().replace(/[-: ]/g, '');
-            const length = str.length;
+            // 📌 ISO 8601 형식인 경우
+            if (typeof input === 'string' && input.includes('T') && input.includes('Z')) {
+                const parsed = new Date(input);
+                if (isNaN(parsed.getTime())) return "잘못된 날짜입니다.";
+                date = parsed;
+            }else {
+                // 기존 로직 유지
+                const str = input.toString().replace(/[-: ]/g, '');
+                const length = str.length;
 
-            if (length !== 8 && length !== 14) {
-                return "잘못된 날짜입니다.";
+                if (length !== 8 && length !== 14) {
+                    return "잘못된 날짜입니다.";
+                }
+
+                const year = str.slice(0, 4);
+                const month = str.slice(4, 6) - 1;
+                const day = str.slice(6, 8);
+                const hour = length === 14 ? str.slice(8, 10) : 0;
+                const minute = length === 14 ? str.slice(10, 12) : 0;
+                const second = length === 14 ? str.slice(12, 14) : 0;
+
+                date = new Date(year, month, day, hour, minute, second);
             }
-
-            const year = str.slice(0, 4);
-            const month = str.slice(4, 6) - 1;
-            const day = str.slice(6, 8);
-            const hour = length === 14 ? str.slice(8, 10) : 0;
-            const minute = length === 14 ? str.slice(10, 12) : 0;
-            const second = length === 14 ? str.slice(12, 14) : 0;
-
-            date = new Date(year, month, day, hour, minute, second);
         } else {
             return "잘못된 날짜입니다.";
         }
@@ -513,40 +521,50 @@ const shnea = (() => ({
     },
     /**
      * 문자열 길이 검사
-     * @param password
+     * @param value
      * @param length
+     * @param type
      * @returns {boolean}
      */
-    checkLength: (password, length) => {
-        return password.length >= length;
+    checkLength: (value, length , type = 'up') => {
+        if (typeof value !== 'string') return false;
+
+        switch (type) {
+            case 'up':   return value.length >= length;
+            case 'down': return value.length <= length;
+            case 'eq':   return value.length == length;
+            default:     return false;
+        }
     },
 
     /**
      * 대소문자 포함 검사
-     * @param password
+     * @param value
      * @returns {boolean}
      */
-    checkUpperLowerCase: (password) => {
-        return /[a-z]/.test(password) && /[A-Z]/.test(password);
+    checkUpperLowerCase: (value) => {
+        return /[a-z]/.test(value) && /[A-Z]/.test(value);
     },
 
     /**
      * 특수문자 포함 검사
-     * @param password
+     * @param value
      * @returns {boolean}
      */
-    checkSpecialChar: (password) => {
-        return /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    checkSpecialChar: (value) => {
+        return /[!@#$%^&*(),.?":{}|<>]/.test(value);
     },
 
     /**
      * 반복 문자 및 문자열 검사
-     * @param password
+     * @param value
+     * @param cnt
      * @returns {boolean}
      */
-    checkRepeatedChars: (password) => {
-        const regex = /(.{1,3})\1{2,}/g;
-        return !regex.test(password);
+    checkRepeatedChars: (value , cnt = 3) => {
+        const pattern = `(.)\\1{${cnt - 1},}`;
+        const regex = new RegExp(pattern, 'g');
+        return !regex.test(value);
     },
 
     /**
@@ -664,9 +682,9 @@ const shnea = (() => ({
         const d = new Date(date);
         const firstDay = new Date(d.getFullYear(), d.getMonth(), 1).getDay();
         const adjustedDate = d.getDate() + firstDay - 1;
-        if (type === 1) {
+        if (type == 1) {
             return Math.ceil(adjustedDate / 7);
-        } else if (type === 2) {
+        } else if (type == 2) {
             const startOfYear = new Date(d.getFullYear(), 0, 1);
             const pastDaysOfYear = (d - startOfYear) / (1000 * 60 * 60 * 24);
             return Math.ceil((pastDaysOfYear + startOfYear.getDay() + 1) / 7);
@@ -715,9 +733,9 @@ const shnea = (() => ({
         const d = new Date(date);
         const day = d.getDay();
         if (day === 0) { // Sunday
-            d.setDate(d.getDate() + (type === 1 ? -2 : 1)); // Friday or next Monday
+            d.setDate(d.getDate() + (type == 1 ? -2 : 1)); // Friday or next Monday
         } else if (day === 6) { // Saturday
-            d.setDate(d.getDate() + (type === 1 ? -1 : 2)); // Friday or next Monday
+            d.setDate(d.getDate() + (type == 1 ? -1 : 2)); // Friday or next Monday
         }
         return d;
     },
@@ -741,7 +759,6 @@ const shnea = (() => ({
         return dates;
     },
 
-    // 37. 조건에 맞는 객체 조회
     /**
      * 배열에서 여러개의 특정 키 벨류로 객체,배역,index 찾기
      * ex ) Utils.queryObjectsByConditions((GLOBAL.bascVlu.list, {{id : '42' , useYn : 'Y'}, 'find')
@@ -752,7 +769,7 @@ const shnea = (() => ({
      * @param mode  default find
      * @returns {*|*[]}
      */
-    queryObjectsByConditions: (arr, conditions, mode = 'find') => {
+    queryObjectsByConditions : (arr, conditions, mode = 'find') => {
         // 조건을 검사하는 함수
         const conditionChecker = (element) =>
             Object.keys(conditions).every(key => element[key] === conditions[key]);
@@ -779,7 +796,7 @@ const shnea = (() => ({
 
     /**
      *
-     * 38. 그룹화된 데이터에 대해 동적 키로 카운트 및 다양한 통계 계산을 수행하는 함수
+     * 그룹화된 데이터에 대해 동적 키로 카운트 및 다양한 통계 계산을 수행하는 함수
      * 사용법
      * const groupBy = ['DEPTNAME', 'DEPTNO']; // 그룹화 기준
      * const keyToCount = 'USERTYPE'; // 동적으로 개수를 셀 키
@@ -965,8 +982,40 @@ const shnea = (() => ({
                 return false;
             }
         }
+    },
 
-
+    /**
+     * 유니코드 인코딩
+     * @param str
+     * @param full
+     */
+    encodeUnicode: (str, full = '') => {
+        return str.split('').map(char => {
+            const code = char.charCodeAt(0).toString(16).toUpperCase();
+            if (full = 'full') {
+                // 4자리 맞춰서 앞에 0 붙이고 \u 붙이기
+                return '\\u' + ('0000' + code).slice(-4);
+            } else {
+                return code;
+            }
+        }).join('');
+    },
+    /**
+     * 유니코드 디코딩
+     * @param str
+     */
+    decodeUnicode : (str) => {
+        if (str.includes('\\u')) {
+            // \uXXXX 형태 디코딩
+            return str.replace(/\\u([\dA-Fa-f]{4})/g, (_, h) =>
+                String.fromCharCode(parseInt(h, 16))
+            );
+        } else {
+            // 16진수 2자리씩 디코딩
+            return str.match(/.{1,2}/g).map(h =>
+                String.fromCharCode(parseInt(h, 16))
+            ).join('');
+        }
     },
 }))();
 
@@ -1130,4 +1179,11 @@ String.prototype.isSnakeCase = function() {
 
 String.prototype.maskSSN = function() {
     return shnea.maskSSN(this);
+}
+
+String.prototype.encodeUnicode = function(full = ''){
+    return shnea.encodeUnicode(this,full);
+}
+String.prototype.decodeUnicode = function(){
+    return shnea.decodeUnicode(this);
 }

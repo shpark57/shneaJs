@@ -1,4 +1,4 @@
-# 공통함수 모음 2024-08-01
+# 공통함수 모음 2025-05-21
 
 `<script src="https://cdn.jsdelivr.net/gh/shpark57/shneaJs@main/shnea.js"></script>` 로 js 호출 <br/>
 `<script src="https://cdn.jsdelivr.net/gh/shpark57/shneaJs@main/shneaJq.js"></script>` 로 jquery 포함된 함수 호출<br/>
@@ -179,7 +179,11 @@ jquery 사용 시 아래 스크립트와 css 추가 필수 <br/>
         40. 타입 체크를 위한 유틸리티 함수
             - shnea.isTypeCheck(value , 'null')  , shnea.isTypeCheck(value , 'num') , shnea.isTypeCheck(value , 'string')  , shnea.isTypeCheck(value , 'object') 등
             - 지원타입 : 'undefined' , 'boolean', 'number' , 'bigint' , 'string' , 'symbol' , 'object' , 'function' , 'ssn' , 'email' , 'phone' , 'null'
-
+        41. 유니코드 인코딩
+            - shnea.encodeUnicode("문자열") or "문자열".encodeUnicode()                  문자열을 유니코드로 변환
+            - shnea.encodeUnicode("문자열" , 'full') or "문자열".encodeUnicode('full')       문자열을 유니코드로 변환
+        42. 유니코드 디코딩
+            - shnea.decodeUnicode("문자열") or "문자열".decodeUnicode()       유니코드를 문자열로 변환
 ## shneaJq.js
     1. 그리드의 열 병합
         $(테이블 선택자).rowspan(colIdx)
@@ -209,3 +213,5 @@ jquery 사용 시 아래 스크립트와 css 추가 필수 <br/>
                 }
         });
     
+
+
