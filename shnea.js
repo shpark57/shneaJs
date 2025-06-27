@@ -762,6 +762,7 @@ const shnea = (() => ({
     /**
      * 배열에서 여러개의 특정 키 벨류로 객체,배역,index 찾기
      * ex ) Utils.queryObjectsByConditions((GLOBAL.bascVlu.list, {{id : '42' , useYn : 'Y'}, 'find')
+     * ex ) Utils.queryObjectsByConditions((GLOBAL.bascVlu.list, {{id : '42' , useYn : 'Y' , test : val => val != 'Y'}, 'find')
      * ex ) Utils.queryObjectsByConditions((GLOBAL.bascVlu.list, {id : '42' , useYn : 'Y'}, 'filter')
      * ex ) Utils.queryObjectsByConditions((GLOBAL.bascVlu.list, {id : '42' , useYn : 'Y'}, 'index')
      * @param arr
@@ -772,7 +773,12 @@ const shnea = (() => ({
     queryObjectsByConditions : (arr, conditions, mode = 'find') => {
         // 조건을 검사하는 함수
         const conditionChecker = (element) =>
-            Object.keys(conditions).every(key => element[key] === conditions[key]);
+            Object.keys(conditions).every(key => {
+                const condition = conditions[key];
+                return typeof condition === 'function'
+                    ? condition(element[key])
+                    : element[key] == condition;
+            });
 
         // 입력 모드에 따라 다른 동작 수행
         switch (mode) {
