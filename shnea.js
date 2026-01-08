@@ -1132,205 +1132,247 @@ const shnea = (() => ({
         }
 
         return age < 0 ? 0 : age;
+    },
+    /**
+     * Prototype 안전 확장 헬퍼
+     *
+     * - String / Array / Date 등의 prototype 확장 시
+     *   for...in 순회, 라이브러리 충돌 등의 사고를 방지하기 위한 유틸
+     *
+     * - Object.defineProperty 를 사용하여
+     *   enumerable: false 로 정의함으로써
+     *   기본 내장 메서드와 동일한 동작 방식 유지
+     *
+     * - 이미 동일한 이름의 메서드가 존재하는 경우
+     *   덮어쓰지 않도록 보호
+     *
+     * @param {Object} proto   확장 대상 prototype (String.prototype 등)
+     * @param {string} name    추가할 메서드 이름
+     * @param {Function} fn    prototype 에 추가할 함수
+     */
+    defineProto : (proto, name, fn) => {
+        if (!proto[name]) {
+            Object.defineProperty(proto, name, {
+                value: fn,
+                enumerable: false
+            });
+        }
     }
 }))();
 
+shnea.defineProto(String.prototype, 'toCamelCase', function () {
+    return shnea.toCamelCase(String(this));
+});
 
+shnea.defineProto(String.prototype, 'toSnakeCase', function (separator = '_') {
+    return shnea.toSnakeCase(String(this), separator);
+});
 
+shnea.defineProto(String.prototype, 'emojiToUnicode', function () {
+    return shnea.emojiToUnicode(String(this));
+});
 
-/**
- * 문자열을 카멜케이스로 변환
- * @returns {string}
- */
-String.prototype.toCamelCase = function() {
-    return shnea.toCamelCase(this);
-};
+shnea.defineProto(String.prototype, 'extractAndReplaceEmojis', function () {
+    return shnea.extractAndReplaceEmojis(String(this));
+});
 
-/**
- * 문자열을 스네이크케이스로 변환
- * @param separator
- * @returns {string}
- */
-String.prototype.toSnakeCase = function(separator = '_') {
-    return shnea.toSnakeCase(this, separator);
-};
+shnea.defineProto(String.prototype, 'decodeUnicodeToEmoji', function () {
+    return shnea.decodeUnicodeToEmoji(String(this));
+});
 
+shnea.defineProto(String.prototype, 'removeHtmlTags', function () {
+    return shnea.removeHtmlTags(String(this));
+});
 
-/**
- * 하나의 이모지를 유니코드로 변환
- * @returns {string}
- */
-String.prototype.emojiToUnicode = function() {
-    return shnea.emojiToUnicode(this);
-}
+shnea.defineProto(String.prototype, 'isValidPhoneNumber', function () {
+    return shnea.isValidPhoneNumber(String(this));
+});
 
-/**
- * 이모지를 유니코드로 변환
- * @returns {string}
- */
-String.prototype.extractAndReplaceEmojis = function() {
-    return shnea.extractAndReplaceEmojis(this);
-}
+shnea.defineProto(String.prototype, 'formatPhoneNumber', function () {
+    return shnea.formatPhoneNumber(String(this));
+});
 
-/**
- * 유니코드를 이모지로 변환
- * @returns {string}
- */
-String.prototype.decodeUnicodeToEmoji = function() {
-    return shnea.decodeUnicodeToEmoji(this);
-}
+shnea.defineProto(String.prototype, 'isValidEmail', function () {
+    return shnea.isValidEmail(String(this));
+});
 
-/**
- * HTML 태그 제거
- * @returns {string}
- */
-String.prototype.removeHtmlTags = function() {
-    return shnea.removeHtmlTags(this);
-}
+shnea.defineProto(String.prototype, 'isValidSSN', function () {
+    return shnea.isValidSSN(String(this));
+});
 
-String.prototype.isValidPhoneNumber = function() {
-    return shnea.isValidPhoneNumber(this);
-}
-String.prototype.formatPhoneNumber = function() {
-    return shnea.formatPhoneNumber(this);
-}
+shnea.defineProto(String.prototype, 'secToTime', function () {
+    return shnea.secToTime(Number(this));
+});
 
-String.prototype.isValidEmail = function() {
-    return shnea.isValidEmail(this);
-}
-String.prototype.isValidSSN = function() {
-    return shnea.isValidSSN(this);
-}
-
-String.prototype.secToTime = function() {
-    return shnea.secToTime(this);
-}
-Number.prototype.secToTime = function() {
-    return shnea.secToTime(this);
-}
-Array.prototype.findIndexByKeyValue = function(key, value) {
-    return shnea.findIndexByKeyValue(this, key, value);
-};
-Array.prototype.findIndexByKey = function(key) {
-    return shnea.findIndexByKey(this, key);
-};
-String.prototype.parseDate = function(format = 'yyyy-MM-dd HH:mm:ss') {
+shnea.defineProto(String.prototype, 'parseDate', function (format = 'yyyy-MM-dd HH:mm:ss') {
     return shnea.parseDate(String(this), format);
-}
-Number.prototype.parseDate = function(format = 'yyyy-MM-dd HH:mm:ss') {
-    return shnea.parseDate(Number(this), format);
-}
-Date.prototype.parseDate = function(format = 'yyyy-MM-dd HH:mm:ss') {
+});
+
+shnea.defineProto(String.prototype, 'checkPassword', function (level = 4) {
+    return shnea.checkPassword(String(this), level);
+});
+
+shnea.defineProto(String.prototype, 'checkLength', function (length) {
+    return shnea.checkLength(String(this), length);
+});
+
+shnea.defineProto(String.prototype, 'checkUpperLowerCase', function () {
+    return shnea.checkUpperLowerCase(String(this));
+});
+
+shnea.defineProto(String.prototype, 'checkSpecialChar', function () {
+    return shnea.checkSpecialChar(String(this));
+});
+
+shnea.defineProto(String.prototype, 'checkRepeatedChars', function () {
+    return shnea.checkRepeatedChars(String(this));
+});
+
+shnea.defineProto(String.prototype, 'isCamelCase', function () {
+    return shnea.isCamelCase(String(this));
+});
+
+shnea.defineProto(String.prototype, 'isSnakeCase', function () {
+    return shnea.isSnakeCase(String(this));
+});
+
+shnea.defineProto(String.prototype, 'maskSSN', function () {
+    return shnea.maskSSN(String(this));
+});
+
+shnea.defineProto(String.prototype, 'encodeUnicode', function (full = '') {
+    return shnea.encodeUnicode(String(this), full);
+});
+
+shnea.defineProto(String.prototype, 'decodeUnicode', function () {
+    return shnea.decodeUnicode(String(this));
+});
+
+shnea.defineProto(String.prototype, 'getDayOfWeek', function (type = null) {
+    return shnea.getDayOfWeek(String(this), type);
+});
+
+shnea.defineProto(String.prototype, 'getAge', function (type = '1') {
+    return shnea.getAge(String(this), type);
+});
+
+
+
+shnea.defineProto(Number.prototype, 'secToTime', function () {
+    return shnea.secToTime(this);
+});
+
+shnea.defineProto(Number.prototype, 'parseDate', function (format = 'yyyy-MM-dd HH:mm:ss') {
     return shnea.parseDate(this, format);
-}
-Array.prototype.arrayToStats = function(headerField = 'date', categoryField = 'category', valueField = 'value', includeTotal = false, includeAverage = false) {
-    return shnea.arrayToStats(this, headerField, categoryField, valueField, includeTotal, includeAverage);
-}
-Array.prototype.treeToArray = function ({
-                                            idField = 'id',
-                                            parentField = 'upper_id',
-                                            sortField = 'sort',
-                                            childrenKey = 'children'
-                                        } = {}) {
+});
+
+
+shnea.defineProto(Array.prototype, 'findIndexByKeyValue', function (key, value) {
+    return shnea.findIndexByKeyValue(this, key, value);
+});
+
+shnea.defineProto(Array.prototype, 'findIndexByKey', function (key) {
+    return shnea.findIndexByKey(this, key);
+});
+
+shnea.defineProto(Array.prototype, 'arrayToStats', function (
+    headerField = 'date',
+    categoryField = 'category',
+    valueField = 'value',
+    includeTotal = false,
+    includeAverage = false
+) {
+    return shnea.arrayToStats(
+        this,
+        headerField,
+        categoryField,
+        valueField,
+        includeTotal,
+        includeAverage
+    );
+});
+
+shnea.defineProto(Array.prototype, 'treeToArray', function ({
+                                                          idField = 'id',
+                                                          parentField = 'upper_id',
+                                                          sortField = 'sort',
+                                                          childrenKey = 'children'
+                                                      } = {}) {
     return shnea.treeToArray({
         tree: this,
-        idField: idField,
-        parentField: parentField,
-        sortField: sortField,
-        childrenKey: childrenKey
+        idField,
+        parentField,
+        sortField,
+        childrenKey
     });
-}
-Array.prototype.arrayToTree = function ({
-                                            idField = 'id',
-                                            parentField = 'upper_id',
-                                            sortField = null,
-                                            sortOrder = 'asc',    //asc, desc
-                                            childrenKey = 'children'
-                                        } = {}) {
+});
+
+shnea.defineProto(Array.prototype, 'arrayToTree', function ({
+                                                          idField = 'id',
+                                                          parentField = 'upper_id',
+                                                          sortField = null,
+                                                          sortOrder = 'asc',
+                                                          childrenKey = 'children'
+                                                      } = {}) {
     return shnea.arrayToTree({
         array: this,
-        idField: idField,
-        parentField: parentField,
-        sortField: sortField,
-        sortOrder: sortOrder,    //asc, desc
-        childrenKey: childrenKey
+        idField,
+        parentField,
+        sortField,
+        sortOrder,
+        childrenKey
     });
-}
-Array.prototype.queryObjectsByConditions = function(conditions, mode = 'find') {
+});
+
+shnea.defineProto(Array.prototype, 'queryObjectsByConditions', function (conditions, mode = 'find') {
     return shnea.queryObjectsByConditions(this, conditions, mode);
-}
-String.prototype.checkPassword = function(level = 4) {
-    return shnea.checkPassword(String(this), level);
-}
-String.prototype.checkLength = function(length) {
-    return shnea.checkLength(String(this), length);
-}
-String.prototype.checkUpperLowerCase = function() {
-    return shnea.checkUpperLowerCase(String(this));
-}
-String.prototype.checkSpecialChar = function() {
-    return shnea.checkSpecialChar(String(this));
-}
-String.prototype.checkRepeatedChars = function() {
-    return shnea.checkRepeatedChars(String(this));
-}
-Array.prototype.multiSortByKeys = function(keys, order = 'asc') {
+});
+
+shnea.defineProto(Array.prototype, 'multiSortByKeys', function (keys, order = 'asc') {
     return shnea.multiSortByKeys(this, keys, order);
-};
-Array.prototype.calculateByDynamicKey = function(groupBy, keyToCount, operations = []) {
+});
+
+shnea.defineProto(Array.prototype, 'calculateByDynamicKey', function (groupBy, keyToCount, operations = []) {
     return shnea.calculateByDynamicKey(this, groupBy, keyToCount, operations);
-};
-Array.prototype.queryData = function( data2, joinKey, options = {}) {
+});
+
+shnea.defineProto(Array.prototype, 'queryData', function (data2, joinKey, options = {}) {
     return shnea.queryData(this, data2, joinKey, options);
-};
+});
 
-Date.prototype.dateDifference = function(date) {
+shnea.defineProto(Date.prototype, 'parseDate', function (format = 'yyyy-MM-dd HH:mm:ss') {
+    return shnea.parseDate(this, format);
+});
+
+shnea.defineProto(Date.prototype, 'dateDifference', function (date) {
     return shnea.dateDifference(this, date);
-}
-Date.prototype.getLastDayOfMonth = function() {
+});
+
+shnea.defineProto(Date.prototype, 'getLastDayOfMonth', function () {
     return shnea.getLastDayOfMonth(this);
-}
-Date.prototype.getWeekOfMonth = function(type = 1) {
+});
+
+shnea.defineProto(Date.prototype, 'getWeekOfMonth', function (type = 1) {
     return shnea.getWeekOfMonth(this, type);
-}
-Date.prototype.getDayOfWeek = function(type = null) {
-    return shnea.getDayOfWeek(this , type);
-}
-String.prototype.getDayOfWeek = function(type = null) {
+});
 
-    return shnea.getDayOfWeek(String(this), type);
-}
-Date.prototype.addDays = function(days) {
+shnea.defineProto(Date.prototype, 'getDayOfWeek', function (type = null) {
+    return shnea.getDayOfWeek(this, type);
+});
+
+shnea.defineProto(Date.prototype, 'addDays', function (days) {
     return shnea.addDays(this, days);
-}
-Date.prototype.getAdjustedWeekendDate = function(type = 1) {
+});
+
+shnea.defineProto(Date.prototype, 'getAdjustedWeekendDate', function (type = 1) {
     return shnea.getAdjustedWeekendDate(this, type);
-}
-Date.prototype.getDatesBetween = function(endDate) {
+});
+
+shnea.defineProto(Date.prototype, 'getDatesBetween', function (endDate) {
     return shnea.getDatesBetween(this, endDate);
-}
+});
 
-String.prototype.isCamelCase = function() {
-    return shnea.isCamelCase(String(this));
-}
-String.prototype.isSnakeCase = function() {
-    return shnea.isSnakeCase(String(this));
-}
-
-String.prototype.maskSSN = function() {
-    return shnea.maskSSN(String(this));
-}
-
-String.prototype.encodeUnicode = function(full = ''){
-    return shnea.encodeUnicode(String(this),full);
-}
-String.prototype.decodeUnicode = function(){
-    return shnea.decodeUnicode(String(this));
-}
-
-String.prototype.getAge = function (type = '1'){
-    return shnea.getAge(String(this), type);
-}
-Date.prototype.getAge = function (type = '1'){
+shnea.defineProto(Date.prototype, 'getAge', function (type = '1') {
     return shnea.getAge(this, type);
-}
+});
+
