@@ -184,6 +184,16 @@ jquery 사용 시 아래 스크립트와 css 추가 필수 <br/>
             - shnea.encodeUnicode("문자열" , 'full') or "문자열".encodeUnicode('full')       문자열을 유니코드로 변환
         42. 유니코드 디코딩
             - shnea.decodeUnicode("문자열") or "문자열".decodeUnicode()       유니코드를 문자열로 변환
+        43. 날짜 , 문자열을 통해 나이 조회  type 1 : 만나이  2: 한국나이  3: 연나이
+            - shnea.getAge('910507') , or shnea.getAge('1991-05-07') or shnea.getAge('19910507')  or shnea.getAge(new Date())
+            - shnea.getAge('910507' , '1') , or shnea.getAge('1991-05-07', '1') or shnea.getAge('19910507', '2')  or shnea.getAge(new Date())
+            - '910507'.getAge()  or  '910507'.getAge('1')
+        44. defineProto (Prototype 안전 확장)
+            -내장 객체(String, Array, Date 등)의 prototype을 안전하게 확장하기 위한 헬퍼 함수
+            -Object.defineProperty를 사용하여 메서드를 추가
+            -enumerable: false 설정으로 for...in, Object.keys() 순회 시 노출 방지
+            -동일한 이름의 메서드가 이미 존재할 경우 덮어쓰지 않음
+            -shnea.defineProto(Prototype, 'methodName', function () { ... })
 ## shneaJq.js
     1. 그리드의 열 병합
         $(테이블 선택자).rowspan(colIdx)
