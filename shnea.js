@@ -353,7 +353,9 @@ const shnea = (() => ({
     ,
     parseDate: (input, format = 'yyyy-MM-dd HH:mm:ss') => {
         let date;
-        if (input instanceof Date) {
+        if (input === null || input === undefined || input === "") {
+            return "";
+        }else if (input instanceof Date) {
             date = input;
         } else if (typeof input === 'string' || typeof input === 'number') {
             // 📌 ISO 8601 형식인 경우
@@ -366,16 +368,31 @@ const shnea = (() => ({
                 const str = input.toString().replace(/[-: ]/g, '');
                 const length = str.length;
 
-                if (length !== 8 && length !== 14) {
+                let year, month, day, hour = 0, minute = 0, second = 0;
+
+                if (length === 6) {
+                    // ✅ YYMMDD 처리
+                    const yy = parseInt(str.slice(0, 2), 10);
+                    const currentYY = new Date().getFullYear() % 100;
+
+                    year = yy <= currentYY ? 2000 + yy : 1900 + yy;
+                    month = str.slice(2, 4) - 1;
+                    day = str.slice(4, 6);
+
+                } else if (length === 8 || length === 14) {
+                    year = str.slice(0, 4);
+                    month = str.slice(4, 6) - 1;
+                    day = str.slice(6, 8);
+
+                    if (length === 14) {
+                        hour = str.slice(8, 10);
+                        minute = str.slice(10, 12);
+                        second = str.slice(12, 14);
+                    }
+
+                } else {
                     return "잘못된 날짜입니다.";
                 }
-
-                const year = str.slice(0, 4);
-                const month = str.slice(4, 6) - 1;
-                const day = str.slice(6, 8);
-                const hour = length === 14 ? str.slice(8, 10) : 0;
-                const minute = length === 14 ? str.slice(10, 12) : 0;
-                const second = length === 14 ? str.slice(12, 14) : 0;
 
                 date = new Date(year, month, day, hour, minute, second);
             }
@@ -393,24 +410,31 @@ const shnea = (() => ({
         };
 
         return format.replace(/yyyy|MM|dd|HH|mm|ss/g, matched => map[matched]);
-    }
-
+    },
     /**
-     * 배열을 트리 구조로 변환
+     * 배열을 트리로 변환하는 함수
      * @param array
      * @param idField
      * @param parentField
      * @param sortField
+     * @param sortOrder
+     * @param childrenKey
      * @returns {*[]}
      */
-    ,
-    arrayToTree: (array, idField = 'id', parentField = 'upper_id', sortField = 'sort') => {
+    arrayToTree: ({
+                      array = [],
+                      idField = 'id',
+                      parentField = 'upper_id',
+                      sortField = null,
+                      sortOrder = 'asc',    //asc, desc
+                      childrenKey = 'children'
+                  }={}) => {
         const nodes = {};
         const roots = [];
 
         // 모든 노드를 id를 키로 하는 객체에 저장
         array.forEach(item => {
-            nodes[item[idField]] = {...item, children: []};
+            nodes[item[idField]] = {...item, [childrenKey]: []};
         });
 
         // 각 노드를 그 부모의 children 배열에 추가
@@ -420,46 +444,95 @@ const shnea = (() => ({
                 roots.push(nodes[item[idField]]);
             } else if (nodes[item[parentField]]) {
                 // 부모 노드를 찾아서 children에 추가
-                nodes[item[parentField]].children.push(nodes[item[idField]]);
+                nodes[item[parentField]][childrenKey].push(nodes[item[idField]]);
             }
         });
 
-        // 각 노드의 children 배열을 sortField 기준으로 정렬
+        // 정렬  설정
         const sortChildren = (node) => {
-            node.children.sort((a, b) => a[sortField] - b[sortField]);
-            node.children.forEach(child => sortChildren(child));
+            const children = node[childrenKey];
+            if(sortField){
+                if(sortOrder === 'desc'){
+                    children.sort((a, b) => {
+                        if(typeof a[sortField] === 'string' && typeof b[sortField] === 'string'){
+                            return b[sortField].localeCompare(a[sortField]);
+                        }else{
+                            return b[sortField] - a[sortField]
+                        }
+                    });
+                }else {
+                    children.sort((a, b) => {
+                        if (typeof a[sortField] === 'string' && typeof b[sortField] === 'string') {
+                            return a[sortField].localeCompare(b[sortField]);
+                        } else {
+                            return b[sortField] - a[sortField]
+                        }
+                    });
+                }
+            }
+
+            children.forEach(child => sortChildren(child));
         };
 
-        // 루트 노드들도 sortField 기준으로 정렬
-        roots.sort((a, b) => a[sortField] - b[sortField]);
+        if(sortField){
+            // 루트 노드들도 sortField 기준으로 정렬
+            if(sortOrder === 'desc'){
+                roots.sort((a, b) => {
+                    if(typeof a[sortField] === 'string' && typeof b[sortField] === 'string'){
+                        return b[sortField].localeCompare(a[sortField]);
+                    }else{
+                        return b[sortField] - a[sortField]
+                    }
+                });
+            }else {
+                roots.sort((a, b) => {
+                    if (typeof a[sortField] === 'string' && typeof b[sortField] === 'string') {
+                        return a[sortField].localeCompare(b[sortField]);
+                    } else {
+                        return b[sortField] - a[sortField]
+                    }
+                });
+            }
+        }
         roots.forEach(root => sortChildren(root));
 
         return roots
-    }
+    },
 
     /**
-     * 트리를 배열로 변환
+     *
      * @param tree
      * @param idField
      * @param parentField
      * @param sortField
+     * @param childrenKey
      * @returns {*[]}
      */
-    ,
-    treeToArray: (tree, idField = 'id', parentField = 'upper_id', sortField = 'sort') => {
+    treeToArray : ({
+                       tree = [],
+                       idField = 'id',
+                       parentField = 'upper_id',
+                       sortField = 'sort',
+                       childrenKey = 'children'
+                   }={} ) => {
         const result = [];
 
         // 트리를 순회하면서 배열로 변환
         const traverse = (node) => {
-            const {children, ...rest} = node;  // children을 제외한 나머지 필드 가져오기
+            const { [childrenKey]: _, ...rest } = node;  // childrenKey를 제거
             result.push(rest);  // 나머지 필드를 배열에 추가
-            node.children.sort((a, b) => a[sortField] - b[sortField]).forEach(child => traverse(child));
+            const children = node[childrenKey];
+            if (Array.isArray(children) && children.length > 0) {
+                if(sortField){
+                    children.sort((a, b) => a[sortField] - b[sortField])
+                }
+                children.forEach(child => traverse(child));
+            }
         };
 
         tree.forEach(root => traverse(root));
-        return result
-    }
-
+        return result;
+    },
     /**
      * 배열을 통계 데이터로 변환
      * @param array
@@ -470,7 +543,6 @@ const shnea = (() => ({
      * @param includeAverage
      * @returns {*[]}
      */
-    ,
     arrayToStats: (array, headerField = 'date', categoryField = 'category', valueField = 'value', includeTotal = false, includeAverage = false) => {
         const stats = {};
         const allCategories = Array.from(new Set(array.map(item => item[categoryField])));
@@ -761,10 +833,10 @@ const shnea = (() => ({
 
     /**
      * 배열에서 여러개의 특정 키 벨류로 객체,배역,index 찾기
-     * ex ) Utils.queryObjectsByConditions((GLOBAL.bascVlu.list, {{id : '42' , useYn : 'Y'}, 'find')
-     * ex ) Utils.queryObjectsByConditions((GLOBAL.bascVlu.list, {{id : '42' , useYn : 'Y' , test : val => val != 'Y'}, 'find')
-     * ex ) Utils.queryObjectsByConditions((GLOBAL.bascVlu.list, {id : '42' , useYn : 'Y'}, 'filter')
-     * ex ) Utils.queryObjectsByConditions((GLOBAL.bascVlu.list, {id : '42' , useYn : 'Y'}, 'index')
+     * ex ) shnea.queryObjectsByConditions((GLOBAL.bascVlu.list, {{id : '42' , useYn : 'Y'}, 'find')
+     * ex ) shnea.queryObjectsByConditions((GLOBAL.bascVlu.list, {{id : '42' , useYn : 'Y' , test : val => val != 'Y'}, 'find')
+     * ex ) shnea.queryObjectsByConditions((GLOBAL.bascVlu.list, {id : '42' , useYn : 'Y'}, 'filter')
+     * ex ) shnea.queryObjectsByConditions((GLOBAL.bascVlu.list, {id : '42' , useYn : 'Y'}, 'index')
      * @param arr
      * @param conditionsㅉ
      * @param mode  default find
@@ -1023,6 +1095,44 @@ const shnea = (() => ({
             ).join('');
         }
     },
+    getAge : (birthDate , type = '1') => {
+        const dateStr = shnea.parseDate(birthDate, 'yyyy-MM-dd');
+        if(!/^\d{4}-\d{2}-\d{2}$/.test(dateStr)){
+            return dateStr;
+        }
+
+        const birth = new Date(dateStr);
+        const today = new Date();
+
+        const birthYear = birth.getFullYear();
+        const birthMonth = birth.getMonth();
+        const birthDay = birth.getDate();
+
+        let age;
+
+        if (type == '1') {
+            // 만나이
+            age = today.getFullYear() - birthYear;
+
+            // 생일 안 지났으면 -1
+            if (
+                today.getMonth() < birthMonth ||
+                (today.getMonth() === birthMonth && today.getDate() < birthDay)
+            ) {
+                age--;
+            }
+        } else if (type == '2') {
+            // 한국나이 (출생년도 + 1)
+            age = today.getFullYear() - birthYear + 1;
+        } else if(type == '3'){
+            // 연나이 (생일 무관)
+            age = today.getFullYear() - birthYear;
+        }else {
+            return "";
+        }
+
+        return age < 0 ? 0 : age;
+    }
 }))();
 
 
@@ -1116,29 +1226,53 @@ Date.prototype.parseDate = function(format = 'yyyy-MM-dd HH:mm:ss') {
 Array.prototype.arrayToStats = function(headerField = 'date', categoryField = 'category', valueField = 'value', includeTotal = false, includeAverage = false) {
     return shnea.arrayToStats(this, headerField, categoryField, valueField, includeTotal, includeAverage);
 }
-Array.prototype.treeToArray = function(idField = 'id', parentField = 'upper_id', sortField = 'sort') {
-    return shnea.treeToArray(this, idField, parentField, sortField);
+Array.prototype.treeToArray = function ({
+                                            idField = 'id',
+                                            parentField = 'upper_id',
+                                            sortField = 'sort',
+                                            childrenKey = 'children'
+                                        } = {}) {
+    return shnea.treeToArray({
+        tree: this,
+        idField: idField,
+        parentField: parentField,
+        sortField: sortField,
+        childrenKey: childrenKey
+    });
 }
-Array.prototype.arrayToTree = function(idField = 'id', parentField = 'upper_id', sortField = 'sort') {
-    return shnea.arrayToTree(this, idField, parentField, sortField);
+Array.prototype.arrayToTree = function ({
+                                            idField = 'id',
+                                            parentField = 'upper_id',
+                                            sortField = null,
+                                            sortOrder = 'asc',    //asc, desc
+                                            childrenKey = 'children'
+                                        } = {}) {
+    return shnea.arrayToTree({
+        array: this,
+        idField: idField,
+        parentField: parentField,
+        sortField: sortField,
+        sortOrder: sortOrder,    //asc, desc
+        childrenKey: childrenKey
+    });
 }
 Array.prototype.queryObjectsByConditions = function(conditions, mode = 'find') {
     return shnea.queryObjectsByConditions(this, conditions, mode);
 }
 String.prototype.checkPassword = function(level = 4) {
-    return shnea.checkPassword(this, level);
+    return shnea.checkPassword(String(this), level);
 }
 String.prototype.checkLength = function(length) {
-    return shnea.checkLength(this, length);
+    return shnea.checkLength(String(this), length);
 }
 String.prototype.checkUpperLowerCase = function() {
-    return shnea.checkUpperLowerCase(this);
+    return shnea.checkUpperLowerCase(String(this));
 }
 String.prototype.checkSpecialChar = function() {
-    return shnea.checkSpecialChar(this);
+    return shnea.checkSpecialChar(String(this));
 }
 String.prototype.checkRepeatedChars = function() {
-    return shnea.checkRepeatedChars(this);
+    return shnea.checkRepeatedChars(String(this));
 }
 Array.prototype.multiSortByKeys = function(keys, order = 'asc') {
     return shnea.multiSortByKeys(this, keys, order);
@@ -1164,7 +1298,7 @@ Date.prototype.getDayOfWeek = function(type = null) {
 }
 String.prototype.getDayOfWeek = function(type = null) {
 
-    return shnea.getDayOfWeek(this, type);
+    return shnea.getDayOfWeek(String(this), type);
 }
 Date.prototype.addDays = function(days) {
     return shnea.addDays(this, days);
@@ -1177,19 +1311,26 @@ Date.prototype.getDatesBetween = function(endDate) {
 }
 
 String.prototype.isCamelCase = function() {
-    return shnea.isCamelCase(this);
+    return shnea.isCamelCase(String(this));
 }
 String.prototype.isSnakeCase = function() {
-    return shnea.isSnakeCase(this);
+    return shnea.isSnakeCase(String(this));
 }
 
 String.prototype.maskSSN = function() {
-    return shnea.maskSSN(this);
+    return shnea.maskSSN(String(this));
 }
 
 String.prototype.encodeUnicode = function(full = ''){
-    return shnea.encodeUnicode(this,full);
+    return shnea.encodeUnicode(String(this),full);
 }
 String.prototype.decodeUnicode = function(){
-    return shnea.decodeUnicode(this);
+    return shnea.decodeUnicode(String(this));
+}
+
+String.prototype.getAge = function (type = '1'){
+    return shnea.getAge(String(this), type);
+}
+Date.prototype.getAge = function (type = '1'){
+    return shnea.getAge(this, type);
 }
